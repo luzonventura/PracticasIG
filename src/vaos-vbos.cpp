@@ -462,7 +462,7 @@ void DescrVAO::draw( const GLenum mode )
       // Último parámetro (Offset) a 0 ¿?
       glDrawElements(mode, idxs_count, idxs_type, offset);
    } else {
-      glDrawArrays(mode, 0, count);
+      glDrawArrays(mode, 0, idxs_count);
    }
    // 3. Desactivar el VAO (activar el VAO 0 con 'glBindVertexArray')
    glBindVertexArray(0);
