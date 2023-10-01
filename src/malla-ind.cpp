@@ -186,7 +186,7 @@ void MallaInd::visualizarGeomGL( )
       dvao->habilitarAtrib(3, false);
    }
 
-   // PRIMITIVA GL_LINES O GL_TRIANGLES ¿?
+   // PRIMITIVA GL_LINES O GL_TRIANGLES ¿? REVISAR
    dvao->draw( GL_LINES );
    
    if ( !col_ver.empty() ) {

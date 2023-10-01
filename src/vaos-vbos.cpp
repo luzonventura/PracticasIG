@@ -369,7 +369,9 @@ void DescrVAO::crearVAO()
    // 2. Para cada VBO de atributos adjunto al VAO (puntero en 'dvbo_atributo' no nulo):
    //       Crear el VBO de atributos en la GPU (usar 'crearVBO') 
    for (unsigned i = 0; i < num_atribs; i++) {
-       dvbo_atributo[i]->crearVBO();
+      if(dvbo_atributo[i] != nullptr) {
+         dvbo_atributo[i]->crearVBO();
+      }
    }
    // 3. Si hay índices (puntero dvbo_indices no nulo) entonces, 
    //       Crear el VBO de índices (usar método 'crearVBO')
