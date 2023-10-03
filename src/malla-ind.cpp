@@ -109,10 +109,10 @@ void MallaInd::visualizarGL( )
    // Si el objeto tiene un color asignado (se comprueba con 'tieneColor')
    //    - hacer push del color actual del cauce
    //    - fijar el color en el cauce usando el color del objeto (se lee con 'leerColor()')
-   if ( tieneColor() ) {
-      // "pushColor" hace directamente push del color actual del cauce
+
+   if(tieneColor()){
       cauce->pushColor();
-      cauce->fijarColor( leerColor() );
+      cauce->fijarColor(leerColor());
    }
 
    // COMPLETAR: práctica 1: crear el descriptor de VAO, si no está creado
@@ -123,37 +123,39 @@ void MallaInd::visualizarGL( )
    //   * finalmente se añaden al VAO los descriptores VBOs con tablas de atributos 
    //     que no estén vacías
    //  Si el VAO ya está creado, (dvao no nulo), no hay que hacer nada.
-   
+   //
+
    if ( dvao == nullptr ) {
       // Creamos el descriptor de VAO con su constructor pasandole el número de atributos del cauce
       // y la tabla de posiciones asignandole el indice 0
-      dvao = new DescrVAO(numero_atributos_cauce, new DescrVBOAtribs(0, vertices));
+      dvao = new DescrVAO(numero_atributos_cauce, new DescrVBOAtribs(ind_atrib_posiciones, vertices));
       // Llamamos constructor DescrVBOInds con la tabla de triángulos y lo agregamos al VAO
       dvao->agregar( new DescrVBOInds( triangulos ) );
       // Añadimos al VAO los descriptores VBOs con tablas de atributos que no estén vacías
       if( !col_ver.empty() ) {
-         dvao->agregar( new DescrVBOAtribs(1, col_ver) );
+         dvao->agregar( new DescrVBOAtribs(ind_atrib_colores, col_ver) );
       }
       if( !nor_ver.empty() ) {
-         dvao->agregar( new DescrVBOAtribs(2, nor_ver) );
+         dvao->agregar( new DescrVBOAtribs(ind_atrib_normales, nor_ver) );
       }
       if( !cc_tt_ver.empty() ) {
-         dvao->agregar( new DescrVBOAtribs(3, cc_tt_ver) );
+         dvao->agregar( new DescrVBOAtribs(ind_atrib_coord_text, cc_tt_ver) );
       }
    }
 
    // COMPLETAR: práctica 1: visualizar el VAO usando el método 'draw' de 'DescrVAO'
-   dvao->draw( GL_TRIANGLES );
+
+   dvao->draw(GL_TRIANGLES);
 
    // COMPLETAR: práctica 1: restaurar color anterior del cauce 
    //
    // Si el objeto tiene un color asignado (se comprueba con 'tieneColor')
    //    - hacer 'pop' del color actual del cauce
-   if ( tieneColor() ) {
-      cauce->popColor();
-   }
 
+   if(tieneColor())
+      cauce->popColor();
 }
+
 
 // -----------------------------------------------------------------------------
 // Visualizar el objeto con OpenGL
@@ -177,26 +179,26 @@ void MallaInd::visualizarGeomGL( )
    // Deshabilitamos también posiciones (vértices) ¿?
 
    if ( !col_ver.empty() ) {
-      dvao->habilitarAtrib(1, false);
+      dvao->habilitarAtrib(ind_atrib_colores, false);
    }
    if ( !nor_ver.empty() ) {
-      dvao->habilitarAtrib(2, false);
+      dvao->habilitarAtrib(ind_atrib_normales, false);
    }
    if ( !cc_tt_ver.empty() ) {
-      dvao->habilitarAtrib(3, false);
+      dvao->habilitarAtrib(ind_atrib_coord_text, false);
    }
 
    // PRIMITIVA GL_LINES O GL_TRIANGLES ¿? REVISAR
-   dvao->draw( GL_LINES );
+   dvao->draw( GL_TRIANGLES );
    
    if ( !col_ver.empty() ) {
-      dvao->habilitarAtrib(1, true);
+      dvao->habilitarAtrib(ind_atrib_colores, true);
    }
    if ( !nor_ver.empty() ) {
-      dvao->habilitarAtrib(2, true);
+      dvao->habilitarAtrib(ind_atrib_normales, true);
    }
    if ( !cc_tt_ver.empty() ) {
-      dvao->habilitarAtrib(3, true);
+      dvao->habilitarAtrib(ind_atrib_coord_text, true);
    }
 
 }
@@ -325,5 +327,60 @@ Cubo::Cubo()
 
 }
 
+Tetraedro::Tetraedro()
+:  MallaInd( "tetraedro 4 vértices" )
+{
+   vertices =
+      {  { -1.0, -1.0, -1.0 }, // 0
+         { +1.0, -1.0, -1.0 }, // 1
+         { +0.0, +1.0, -1.0 }, // 2
+         { +0.0, +0.0, +1.0 }, // 3
+      } ;
+
+   triangulos = {
+      {0,1,2}, {0,1,3}, {1,2,3}, {0,2,3}
+   };
+
+   ponerColor({0.5, 0.5, 0.5});
+}
+
 // -----------------------------------------------------------------------------------------------
 
+CuboColores::CuboColores()
+:  MallaInd("cubo 8 vétices a color")
+{
+   vertices =
+      {  { -1.0, -1.0, -1.0 }, // 0
+         { -1.0, -1.0, +1.0 }, // 1
+         { -1.0, +1.0, -1.0 }, // 2
+         { -1.0, +1.0, +1.0 }, // 3
+         { +1.0, -1.0, -1.0 }, // 4
+         { +1.0, -1.0, +1.0 }, // 5
+         { +1.0, +1.0, -1.0 }, // 6
+         { +1.0, +1.0, +1.0 }, // 7
+      } ;
+
+
+
+   triangulos =
+      {  {0,1,3}, {0,3,2}, // X-
+         {4,7,5}, {4,6,7}, // X+ (+4)
+
+         {0,5,1}, {0,4,5}, // Y-
+         {2,3,7}, {2,7,6}, // Y+ (+2)
+
+         {0,6,4}, {0,2,6}, // Z-
+         {1,5,7}, {1,7,3}  // Z+ (+1)
+      } ;
+
+   col_ver = {
+      {0.0, 0.0, 0.0}, // 0
+      {0.0, 0.0, 1.0}, // 1
+      {0.0, 1.0, 0.0}, // 2
+      {0.0, 1.0, 1.0}, // 3
+      {1.0, 0.0, 0.0}, // 4
+      {1.0, 0.0, 1.0}, // 5
+      {1.0, 1.0, 0.0}, // 6
+      {1.0, 1.0, 1.0}, // 7
+   };  
+}

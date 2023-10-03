@@ -138,18 +138,26 @@ void DescrVBOAtribs::crearVBO()
    // añadir el código para crear el VBO (transferir datos y registrar metadatos), se 
    // deben de dar estos pasos:
    //
-   // 1. generar un nuevo identificador o nombre de VBO
-   glGenBuffers(1, &buffer);
+
+   // 1. generar un nuevo identificador o nombre de VBO 
+   glGenBuffers(1,&buffer); // produce buffer > 0
+
    // 2. fija este buffer como buffer 'activo' actualmente en el 'target' GL_ARRAY_BUFFER
-   glBindBuffer(GL_ARRAY_BUFFER, buffer);
+   glBindBuffer(GL_ARRAY_BUFFER,buffer);
+   
    // 3. transferir los datos desde la memoria de la aplicación al VBO en GPU
-   glBufferData(GL_ARRAY_BUFFER, tot_size, data, GL_STATIC_DRAW);
-   // 4. registrar para este índice de atributo, la localización y el formato de la tabla en el buffer
-   glVertexAttribPointer(index, size, type, GL_FALSE, 0, data);
+   glBufferData(GL_ARRAY_BUFFER,tot_size,data,GL_STATIC_DRAW);
+   
+   // 4. registrar para este índice de atributo, la localización y el formato de la tabla en el buffer 
+   glVertexAttribPointer(index,size,type,GL_FALSE,stride,offset);
+
    // 5. desactivar el buffer
-   glBindBuffer(GL_ARRAY_BUFFER, 0);
+   glBindBuffer(GL_ARRAY_BUFFER,0);
+
    // 6. habilitar el uso de esta tabla de atributos
    glEnableVertexAttribArray(index);
+
+   //
 
    // comprobar que no ha habido error durante la creación del VBO
    CError();
@@ -250,13 +258,17 @@ void DescrVBOInds::crearVBO( )
    // Añadir el código para crear el VBO en la GPU y transferir los datos, se deben 
    // de dar estos pasos:
    //
+
    // 1. crear un nuevo nombre o identificador de VBO 
-   glGenBuffers(1, &buffer);
+   glGenBuffers(1,&buffer);   // produce buffer > 0
+
    // 2. activar ('bind') el buffer en el 'target' GL_ELEMENT_ARRAY_BUFFER
-   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer);
+   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,buffer);
+
    // 3. transferir los datos desde la memoria de la aplicación al VBO en GPU
-   glBufferData(GL_ELEMENT_ARRAY_BUFFER, tot_size, indices, GL_STATIC_DRAW);
-      
+   glBufferData(GL_ELEMENT_ARRAY_BUFFER,tot_size,indices,GL_STATIC_DRAW);
+
+   //
    // comprueba que no ha habido error al crear el VBO 
    CError();
 }
@@ -364,31 +376,32 @@ void DescrVAO::crearVAO()
    // los VBOs en este VAO. Se deben dar estos pasos:
    //
    // 1. Crear el nombre de VAO y activarlo como VAO actual (hacer 'bind')
-   glGenVertexArrays(1, &array);
+   glGenVertexArrays(1,&array); assert(0<array);
    glBindVertexArray(array);
    // 2. Para cada VBO de atributos adjunto al VAO (puntero en 'dvbo_atributo' no nulo):
-   //       Crear el VBO de atributos en la GPU (usar 'crearVBO') 
+   //       Crear el VBO de atributos en la GPU (usar 'crearVBO')
    for (unsigned i = 0; i < num_atribs; i++) {
-      if(dvbo_atributo[i] != nullptr) {
+      if(dvbo_atributo[i] != nullptr){
          dvbo_atributo[i]->crearVBO();
       }
-   }
+   }  
    // 3. Si hay índices (puntero dvbo_indices no nulo) entonces, 
    //       Crear el VBO de índices (usar método 'crearVBO')
-   if (dvbo_indices != nullptr) {
-       dvbo_indices->crearVBO();
+   if(dvbo_indices!=nullptr){
+      dvbo_indices->crearVBO();
    }
    // 4. Para cada VBO de atributos adjunto al VAO (puntero en 'dvbo_atributo' no nulo):
    //       Si la tabla está deshabilitada en el vector 'atrib_habilitado':
-   //           Deshabilitarla en la GPU con 'glDisableVertexArray'
-   for (unsigned i = 0; i < num_atribs; ++i) {
-       if (!atrib_habilitado[i]) {
-           // OpenGL sabe que se refiere al VAO vinculado anteriormente con "bind", es
-           // decir, se refiere a array sin nosotros tener que especificarselo ya que
-           // es el VAO actualmente vinculado con anterioridad, OpenGL mantiene un estado
-           // de contexto actual que rastrea el VAO actual..
-           glDisableVertexAttribArray(i);
-       }
+   //           Deshabilitarla en la GPU con 'glDisableVertexAttribArray'
+   //
+   for (unsigned i = 0; i < num_atribs; i++) {
+      if( !atrib_habilitado[i] && dvbo_atributo[i] != nullptr ) {
+         // OpenGL sabe que se refiere al VAO vinculado anteriormente con "bind", es
+         // decir, se refiere a array sin nosotros tener que especificarselo ya que
+         // es el VAO actualmente vinculado con anterioridad, OpenGL mantiene un estado
+         // de contexto actual que rastrea el VAO actual..
+         glDisableVertexAttribArray(dvbo_atributo[i]->buffer);
+      }
    }
 
    CError();
@@ -444,26 +457,26 @@ void DescrVAO::draw( const GLenum mode )
    // se debe de escribir código que da estos pasos:
    //
    // 1. Comprobar si el array se ha creado o no (antes de crearse, 'array' vale 0, después es >0). 
+   if(array==0){
    //    Si el array no se ha creado todavía:
    //     - crear el VAO en la GPU (método 'crearVAO'), el VAO queda activado 
+      crearVAO();
+   }else{
    //    Si el array ya se ha creado:
    //     - activar el VAO (con 'glBindVertexArray')
-   if (array == 0) {
-       crearVAO(); 
-   } else {
-       glBindVertexArray(array);
-   } 
+      glBindVertexArray(array);
+   }
    // 2. Comprobar si la secuencia es indexada o no lo es (si no es indexada 'dvbo_indices' es nulo)
+   if(dvbo_indices!=nullptr){
    //    Si la secuencia es indexada
    //     - visualizar con 'glDrawElements'
+      glDrawElements(mode,idxs_count,idxs_type,offset);
+   }else{
    //    Si la secuencia no es indexada 
    //     - visualizar con 'glDrawArrays'
-   if (dvbo_indices != nullptr) {
-      // Último parámetro (Offset) a 0 ¿?
-      glDrawElements(mode, idxs_count, idxs_type, offset);
-   } else {
-      glDrawArrays(mode, 0, idxs_count);
+      glDrawArrays(mode,first,count);
    }
+   //
    // 3. Desactivar el VAO (activar el VAO 0 con 'glBindVertexArray')
    glBindVertexArray(0);
 
