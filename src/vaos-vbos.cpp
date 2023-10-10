@@ -470,7 +470,7 @@ void DescrVAO::draw( const GLenum mode )
    if(dvbo_indices!=nullptr){
    //    Si la secuencia es indexada
    //     - visualizar con 'glDrawElements'
-      glDrawElements(mode,idxs_count,idxs_type,offset);
+      glDrawElements(mode,idxs_count,idxs_type,nullptr);
    }else{
    //    Si la secuencia no es indexada 
    //     - visualizar con 'glDrawArrays'
