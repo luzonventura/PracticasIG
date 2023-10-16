@@ -66,8 +66,41 @@ class MallaRevolPLY : public MallaRevol
                   const unsigned nperfiles ) ;
 } ;
 
+// clases mallas indexadas por revolución de un perfil generado proceduralmente
+class Cilindro : public MallaRevol
+{
+   public:
+// Constructor: crea el perfil original y llama a inicializar
+// la base tiene el centro en el origen, el radio y la altura son 1
+   Cilindro
+   (
+      const int num_verts_per, // número de vértices del perfil original (m)
+      const unsigned nperfiles // número de perfiles (n)
+   ) ;
+} ;
 
+class Cono : public MallaRevol
+{
+   public:
+   // Constructor: crea el perfil original y llama a inicializar
+   // la base tiene el centro en el origen, el radio y altura son 1
+   Cono
+   (
+      const int num_verts_per, // número de vértices del perfil original (m)
+      const unsigned nperfiles // número de perfiles (n)
+   ) ;
+} ;
 
-
+class Esfera : public MallaRevol
+{
+   public:
+   // Constructor: crea el perfil original y llama a inicializar
+   // La esfera tiene el centro en el origen, el radio es la unidad
+   Esfera
+   (
+      const int num_verts_per, // número de vértices del perfil original (M)
+      const unsigned nperfiles // número de perfiles (N)
+   ) ;
+} ;
 
 #endif

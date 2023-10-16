@@ -55,9 +55,30 @@ void MallaRevol::inicializar
    //
    // ............................... 
 
+   unsigned int m = perfil.size();
+   unsigned int n = num_copias;
 
+   std::vector<glm::vec3>  vertices ;
 
+   for (unsigned i = 0; i < n; i++) {
+      for (unsigned j = 0; j < m; j++) {
+         float angulo = 2.0 * M_PI * i / (n - 1);
+         float x = perfil[j].x * cos(angulo) + perfil[j].z * sin(angulo);
+         float y = perfil[j].y;
+         float z = -perfil[j].x * sin(angulo) + perfil[j].z * cos(angulo);
+         vertices.push_back(glm::vec3(x, y, z));
+      }
+   }
 
+   std::vector<glm::uvec3> triangulos ;
+
+   for (unsigned i = 0; i < (n - 1); i++) {
+      for (unsigned j = 0; j < (m - 1); j++) {
+         unsigned int k = i * m + j;
+         triangulos.push_back(glm::uvec3(k, k + m, k + m + 1));
+         triangulos.push_back(glm::uvec3(k, k + m + 1, k + 1));
+      }
+   }
 
 }
 
@@ -75,6 +96,10 @@ MallaRevolPLY::MallaRevolPLY
    // Leer los vértice del perfil desde un PLY, después llamar a 'inicializar'
    // ...........................
 
+   std::vector<glm::vec3> perfil;
+
+   LeerVerticesPLY(nombre_arch, perfil);
+   inicializar(perfil, nperfiles);
 
 }
 
