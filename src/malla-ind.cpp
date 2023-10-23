@@ -296,7 +296,7 @@ MallaPLY::MallaPLY( const std::string & nombre_arch )
 }
 
 // ****************************************************************************
-// Clase 'Cubo
+// Clase 'Cubo'
 
 Cubo::Cubo()
 :  MallaInd( "cubo 8 vértices" )
@@ -313,8 +313,6 @@ Cubo::Cubo()
          { +1.0, +1.0, +1.0 }, // 7
       } ;
 
-
-
    triangulos =
       {  {0,1,3}, {0,3,2}, // X-
          {4,7,5}, {4,6,7}, // X+ (+4)
@@ -327,6 +325,9 @@ Cubo::Cubo()
       } ;
 
 }
+
+// ****************************************************************************
+// Clase 'Tetraedro'
 
 Tetraedro::Tetraedro()
 :  MallaInd( "tetraedro 4 vértices" )
@@ -345,7 +346,8 @@ Tetraedro::Tetraedro()
    ponerColor({0.5, 0.5, 0.5});
 }
 
-// -----------------------------------------------------------------------------------------------
+// ****************************************************************************
+// Clase 'CuboColores'
 
 CuboColores::CuboColores()
 :  MallaInd("cubo 8 vétices a color")
@@ -360,8 +362,6 @@ CuboColores::CuboColores()
          { +1.0, +1.0, -1.0 }, // 6
          { +1.0, +1.0, +1.0 }, // 7
       } ;
-
-
 
    triangulos =
       {  {0,1,3}, {0,3,2}, // X-
@@ -384,4 +384,155 @@ CuboColores::CuboColores()
       {1.0, 1.0, 0.0}, // 6
       {1.0, 1.0, 1.0}, // 7
    };  
+}
+
+// ****************************************************************************
+// Clase 'EstrellaZ'
+EstrellaZ::EstrellaZ(unsigned n)
+   : MallaInd( "EstrellaZ" )
+{
+   vertices = 
+      {
+         { 0.5, 0.5, 0} //centro
+      }  ;
+
+   for(unsigned i = 0; i < 2*n; i++){
+      if(i % 2 == 0)
+         vertices.push_back({0.5 + 0.5*cos(M_PI*i/n), 0.5 + 0.5*sin(M_PI*i/n), 0});
+      else
+         vertices.push_back({0.5 + 0.25*cos(M_PI*i/n), 0.5 + 0.25*sin(M_PI*i/n), 0});
+   }
+   
+   for(unsigned i = 0; i<2*n;i++){
+      triangulos.push_back({0, i, i+1});
+   }
+   
+   triangulos.push_back({0, 2*n, 1});
+
+   col_ver.push_back({1, 1, 1});
+
+   for(unsigned i = 0; i<2*n;i++){
+      col_ver.push_back({vertices.at(i+1).x, vertices.at(i+1).y, vertices.at(i+1).z});
+   }
+
+}
+
+// ****************************************************************************
+// Clase 'CasaX'
+
+CasaX::CasaX()
+:  MallaInd("CasaX")
+{
+   vertices =
+      {  { 0, 0, 0 }, // 0
+         { 0, 0, +0.7 }, // 1
+         { 0, +0.7, 0 }, // 2
+         { 0, +0.7, +0.7 }, // 3
+         { +1.0, 0, 0 }, // 4
+         { +1.0, 0, +0.7 }, // 5
+         { +1.0, +0.7, 0 }, // 6
+         { +1.0, +0.7, +0.7 }, // 7
+         { 0, +1.0, +0.35},      // 8 pico 1 del tejado
+         { +1.0, +1.0, +0.35},   // 9 pico 2 del tejado
+      } ;
+
+   triangulos =
+      {  {0,1,3}, {0,3,2}, // X-
+         {4,7,5}, {4,6,7}, // X+ (+4)
+
+         {0,6,4}, {0,2,6}, // Z-
+         {1,5,7}, {1,7,3},  // Z+ (+1)
+
+         {3,7,9}, {3,8,9}, // Primera parte tejado
+         {2,6,8}, {6,8,9}, // Segunda parte tejado
+
+         {6,7,9}, {2,3,8}
+
+      } ;
+
+   // Cada vértice tiene un color RGB cuyas componentes son iguales a sus coordenadas XYZ
+   for(unsigned i = 0;i<vertices.size();i++){
+      col_ver.push_back({vertices.at(i).x, vertices.at(i).y, vertices.at(i).z});
+   }
+}
+
+// ****************************************************************************
+// Clase 'MallaTriangulo'
+
+MallaTriangulo::MallaTriangulo()
+   : MallaInd( "triangulo" )
+{
+   vertices = 
+      {  { -0.5, 0.0, 0.0 }, // 0
+         { 0.5, 0.0, 0.0 }, // 1
+         { 0.0, 1.4142135, 0.0 }, // 2
+      } ;
+
+   triangulos =
+      {
+         { 0, 1, 2 }, // base
+      } ;
+
+   // Color a verde  
+   ponerColor({0, 1, 0});
+}
+
+// ****************************************************************************
+// Clase 'MallaCuadrado'
+
+MallaCuadrado::MallaCuadrado()
+   : MallaInd( "cuadrado" )
+{
+   vertices = 
+      {  { -1, -1, 0.0 }, // 0
+         { 1, -1, 0.0 }, // 1
+         { 1, 1, 0.0 }, // 2
+         { -1, 1, 0.0 }, // 3
+      } ;
+
+   triangulos =
+      {
+         { 0, 1, 2 }, // cara 0
+         { 0, 2, 3 }, // cara 1
+      } ;
+
+   // Color a azul 
+   ponerColor({0, 0, 1});
+}
+
+// ****************************************************************************
+// Clase 'MallaPiramideL'
+
+MallaPiramideL::MallaPiramideL()
+   : MallaInd( "piramideL" )
+{
+   vertices = 
+      {  { 0.0, 0.0, 0.0 }, // 0
+         { 1, 0.0, 0.0 }, // 1
+         { 0.0, 0.0, 1 }, // 2
+         { 1, 0.0, 0.5 }, // 3
+         { 0.5, 0, 1.0 }, // 4
+         { 0.5, 0, 0.5 }, // 5
+         { 0.5, 1, 0.5 }, // 6
+      } ;
+
+   triangulos =
+      {
+         { 0, 1, 2 }, 
+         { 1, 3, 5 }, 
+         { 2, 4, 5 }, 
+         { 0, 1, 6 }, 
+         { 1, 3, 6 }, 
+         { 3, 5, 6 },
+         { 5, 4, 6 }, 
+         { 4, 2, 6 }, 
+         { 2, 0, 6 },  
+      } ;
+   
+   // Cada vértice tiene un color RGB cuyas componentes son iguales a sus coordenadas XYZ
+   for(unsigned i = 0;i<vertices.size();i++){
+      col_ver.push_back({vertices.at(i).x, vertices.at(i).y, vertices.at(i).z});
+   }
+
+   // ponerColor({0, 1, 0});
 }

@@ -320,6 +320,12 @@ Escena1::Escena1()
 
    objetos.push_back(new Tetraedro());
    objetos.push_back(new CuboColores());
+   objetos.push_back(new CasaX());
+   objetos.push_back(new MallaTriangulo());
+   objetos.push_back(new MallaCuadrado());
+   objetos.push_back(new MallaPiramideL());
+   objetos.push_back(new EstrellaZ(10));
+
 }
 
 // -------------------------------------------------------------------------
@@ -335,10 +341,21 @@ Escena2::Escena2()
    cout << "Creando objetos de la práctica 2." << endl ;
 
    // Completar: práctica 2: añadir objetos a la escena 2
-   // objetos.push_back("");
+
+   objetos.push_back(new MallaPLY("../plys/beethoven.ply"));
+   objetos.push_back(new MallaPLY("../plys/big_dodge.ply"));
+
+   int nperfiles = 100; // Número de perfiles
+   int nveper = 10; // Número de vértices por perfil
+
+   objetos.push_back(new MallaRevolPLY("../plys/peon.ply",nperfiles));
+   objetos.push_back(new Cilindro(nveper,nperfiles));
+
+   nveper = 100;
+   
+   objetos.push_back(new Cono(nveper,nperfiles));
+   objetos.push_back(new Esfera(nveper,nperfiles));
 }
-
-
 
 // -------------------------------------------------------------------------
 // COMPLETAR: práctica 3: completar constructor de 'Escena3'

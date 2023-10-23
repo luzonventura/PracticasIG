@@ -76,7 +76,7 @@ class Cilindro : public MallaRevol
    (
       const int num_verts_per, // número de vértices del perfil original (m)
       const unsigned nperfiles // número de perfiles (n)
-   ) ;
+   );
 } ;
 
 class Cono : public MallaRevol

@@ -103,6 +103,41 @@ MallaRevolPLY::MallaRevolPLY
 
 }
 
+// Práctica 2: Clases Cilindro, Cono y Esfera
 
+// Cilindro con el centro de la base en el origen, y con radio y altura 1
+
+Cilindro::Cilindro(const int num_verts_per, const unsigned nperfiles){
+   ponerNombre("cilindro");
+   std::vector<glm::vec3> perfil = std::vector<glm::vec3>();
+
+   for(int i=0; i<num_verts_per; i++){
+      float altura = i*(1.0/(num_verts_per-1));
+      perfil.push_back(glm::vec3(1.0,altura,0.0));
+   }
+   inicializar(perfil,nperfiles);
+}
+
+Esfera::Esfera(const int num_verts_per, const unsigned nperfiles){
+   ponerNombre("esfera");
+   std::vector<glm::vec3> perfil = std::vector<glm::vec3>();
+   float perimetro = (2*M_PI*1.0/(num_verts_per-1));
+   for(int i=0; i<num_verts_per; i++){
+      perfil.push_back(glm::vec3(cos(i*perimetro),sin(i*perimetro),0.0));
+   }
+   inicializar(perfil,nperfiles);
+}
+
+Cono::Cono(const int num_verts_per, const unsigned nperfiles){
+   ponerNombre("cono");
+   std::vector<glm::vec3> perfil = std::vector<glm::vec3>();
+
+   for(int i=0; i<num_verts_per; i++){
+      float altura = i*(1.0/(num_verts_per-1));
+      float x = (num_verts_per-1-i)*(1.0/(num_verts_per-1));
+      perfil.push_back(glm::vec3(x,altura,0.0));
+   }
+   inicializar(perfil,nperfiles);
+}
 
 
