@@ -345,8 +345,8 @@ Escena2::Escena2()
    objetos.push_back(new MallaPLY("../plys/beethoven.ply"));
    objetos.push_back(new MallaPLY("../plys/big_dodge.ply"));
 
-   int nperfiles = 100; // Número de perfiles
-   int nveper = 10; // Número de vértices por perfil
+   int nperfiles = 40; // Número de perfiles
+   int nveper = 8; // Número de vértices por perfil
 
    objetos.push_back(new MallaRevolPLY("../plys/peon.ply",nperfiles));
    objetos.push_back(new Cilindro(nveper,nperfiles));
