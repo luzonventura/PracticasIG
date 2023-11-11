@@ -1,2 +1,1 @@
-# PracticasIG
-Proyecto para la asignatura de Informática Gráfica con OpenGL
+Práctica para la asignatura de "Informática gráfica" en la Universidad de Granada.
