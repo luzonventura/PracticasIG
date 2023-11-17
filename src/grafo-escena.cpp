@@ -29,7 +29,7 @@
 #include "grafo-escena.h"
 #include "aplicacion-ig.h"
 #include "seleccion.h"   // para 'ColorDesdeIdent' 
-
+#include "malla-revol.h"
 
 
 // *********************************************************************
@@ -119,6 +119,26 @@ void NodoGrafoEscena::visualizarGL(  )
    // 5. Si el objeto tiene color asignado:
    //     - restaurar el color original a la entrada (con 'popColor')
 
+   if(tieneColor()){
+      cauce->pushColor();
+      cauce->fijarColor(leerColor());
+   }
+
+   cauce->pushMM();
+
+   for (int i = 0; i < entradas.size(); i++) {
+      if(entradas[i].tipo == TipoEntNGE::objeto){
+         entradas[i].objeto->visualizarGL();
+      }else if(entradas[i].tipo == TipoEntNGE::transformacion){
+         cauce->compMM(*(entradas[i].matriz));
+      }
+   }
+
+   cauce->popMM();
+
+   if(tieneColor()){
+      cauce->popColor();
+   }
 
    // COMPLETAR: práctica 4: añadir gestión de los materiales cuando la iluminación está activada    
    //
@@ -154,7 +174,17 @@ void NodoGrafoEscena::visualizarGeomGL(  )
    //         - Si la entrada es de tipo transformación: componer la matriz (con 'compMM').
    //   3. Restaurar la copia guardada de la matriz de modelado (con 'popMM')
 
-   // .......
+   cauce->pushMM();
+
+   for (int i = 0; i < entradas.size(); i++) {
+      if(entradas[i].tipo == TipoEntNGE::objeto){
+         entradas[i].objeto->visualizarGeomGL();
+      }else if(entradas[i].tipo == TipoEntNGE::transformacion){
+         cauce->compMM(*(entradas[i].matriz));
+      }
+   }
+
+   cauce->popMM();
 
 }
 
@@ -220,7 +250,10 @@ unsigned NodoGrafoEscena::agregar( const EntradaNGE & entrada )
 {
    // COMPLETAR: práctica 3: agregar la entrada al nodo, devolver índice de la entrada agregada
    // ........
-   return 0 ; // sustituir por lo que corresponda ....
+
+   entrada.push_back(entrada);
+
+   return entradas.size()-1 ;
 
 }
 // -----------------------------------------------------------------------------
@@ -259,8 +292,22 @@ glm::mat4 * NodoGrafoEscena::leerPtrMatriz( unsigned indice )
    //
    // Sustituir 'return nullptr' por lo que corresponda.
    //
-   return nullptr ;
-
+   
+   if (indice < 0 || indice >= entradas.size()) {
+      std::cerr << "Error: indice fuera de rango" << std::endl;
+      exit(1);
+   }
+   else if (entradas[indice].tipo != TipoEntNGE::transformacion) {
+      std::cerr << "Error: la entrada no es de tipo transformacion" << std::endl;
+      exit(1);
+   }
+   else if (entradas[indice].matriz == nullptr) {
+      std::cerr << "Error: el puntero a la matriz es nulo" << std::endl;
+      exit(1);
+   }
+   
+   return entradas[indice].matriz;
+   
 
 }
 // -----------------------------------------------------------------------------
