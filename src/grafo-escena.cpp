@@ -360,12 +360,3 @@ bool NodoGrafoEscena::buscarObjeto
    // ni este nodo ni ningún hijo es el buscado: terminar
    return false ;
 }
-
-
-
-
-
-
-
-
-
