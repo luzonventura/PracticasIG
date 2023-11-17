@@ -364,7 +364,11 @@ Escena2::Escena2()
 // los objetos que se indican en los guiones de las práctica 3
 // .......
 
+Escena3::Escena3()
+{
 
+
+}
 
 // ----------------------------------------------------------------------------
 // COMPLETAR: práctica 4: escribir implementación del constructor de 'Escena4'. 

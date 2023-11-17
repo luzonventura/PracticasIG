@@ -29,8 +29,8 @@
 #include "grafo-escena.h"
 #include "aplicacion-ig.h"
 #include "seleccion.h"   // para 'ColorDesdeIdent' 
-#include "malla-revol.h"
 
+using namespace glm;
 
 // *********************************************************************
 // Entrada del nodo del Grafo de Escena
@@ -126,7 +126,7 @@ void NodoGrafoEscena::visualizarGL(  )
 
    cauce->pushMM();
 
-   for (int i = 0; i < entradas.size(); i++) {
+   for (unsigned i = 0; i < entradas.size(); i++) {
       if(entradas[i].tipo == TipoEntNGE::objeto){
          entradas[i].objeto->visualizarGL();
       }else if(entradas[i].tipo == TipoEntNGE::transformacion){
@@ -176,7 +176,7 @@ void NodoGrafoEscena::visualizarGeomGL(  )
 
    cauce->pushMM();
 
-   for (int i = 0; i < entradas.size(); i++) {
+   for (unsigned i = 0; i < entradas.size(); i++) {
       if(entradas[i].tipo == TipoEntNGE::objeto){
          entradas[i].objeto->visualizarGeomGL();
       }else if(entradas[i].tipo == TipoEntNGE::transformacion){
@@ -251,7 +251,7 @@ unsigned NodoGrafoEscena::agregar( const EntradaNGE & entrada )
    // COMPLETAR: práctica 3: agregar la entrada al nodo, devolver índice de la entrada agregada
    // ........
 
-   entrada.push_back(entrada);
+   entradas.push_back(entrada);
 
    return entradas.size()-1 ;
 
@@ -293,7 +293,7 @@ glm::mat4 * NodoGrafoEscena::leerPtrMatriz( unsigned indice )
    // Sustituir 'return nullptr' por lo que corresponda.
    //
    
-   if (indice < 0 || indice >= entradas.size()) {
+   if (indice >= entradas.size()) {
       std::cerr << "Error: indice fuera de rango" << std::endl;
       exit(1);
    }
