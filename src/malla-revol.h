@@ -1,14 +1,17 @@
+// Nombre: Antonio, Apellidos: Luzón Ventura, Titulación: GIIADE.
+// email: luzonventura@correo.ugr.es, DNI o pasaporte: 77448897P
+//
 // *********************************************************************
 // **
 // ** Asignatura: INFORMÁTICA GRÁFICA
-// ** 
+// **
 // ** Mallas indexadas (implementación)
 // ** Copyright (C) 2016-2023 Carlos Ureña
 // **
-// ** Declaración de las clases 
-// **    + MallaRevol: malla indexada de triángulos obtenida por 
+// ** Declaración de las clases
+// **    + MallaRevol: malla indexada de triángulos obtenida por
 // **      revolución de un perfil (derivada de MallaInd)
-// **    + MallaRevolPLY: malla indexada de triángulos, obtenida 
+// **    + MallaRevolPLY: malla indexada de triángulos, obtenida
 // **      por revolución de un perfil leído de un PLY (derivada de MallaRevol)
 // **    + algunas clases derivadas de MallaRevol
 // **
@@ -30,77 +33,73 @@
 #ifndef IG_MALLAREVOL_HPP
 #define IG_MALLAREVOL_HPP
 
-#include <vector>          // usar std::vector
+#include <vector> // usar std::vector
 #include <string>
 
-#include "malla-ind.h"   // declaración de 'Objeto3D'
+#include "malla-ind.h" // declaración de 'Objeto3D'
 // ---------------------------------------------------------------------
 // clase para mallas indexadas obtenidas a partir de la revolución de un perfil
 
 class MallaRevol : public MallaInd
 {
-   private:
-
-
-
-   protected: //
-
+private:
+protected:         //
    MallaRevol() {} // solo usable desde clases derivadas con constructores especificos
 
    // Método que crea las tablas de vértices, triángulos, normales y cc.de.tt.
    // a partir de un perfil y el número de copias que queremos de dicho perfil.
-   void inicializar
-   (
-      const std::vector<glm::vec3> & perfil,     // tabla de vértices del perfil original
-      const unsigned                 num_copias  // número de copias del perfil
-   ) ;
-} ;
-// --------------------------------------------------------------------- 
-
-
+   void inicializar(
+       const std::vector<glm::vec3> &perfil, // tabla de vértices del perfil original
+       const unsigned num_copias             // número de copias del perfil
+   );
+};
+// ---------------------------------------------------------------------
 
 class MallaRevolPLY : public MallaRevol
 {
-   public:
-   MallaRevolPLY( const std::string & nombre_arch,
-                  const unsigned nperfiles ) ;
-} ;
+public:
+   MallaRevolPLY(const std::string &nombre_arch,
+                 const unsigned nperfiles);
+};
 
 // clases mallas indexadas por revolución de un perfil generado proceduralmente
 class Cilindro : public MallaRevol
 {
-   public:
-// Constructor: crea el perfil original y llama a inicializar
-// la base tiene el centro en el origen, el radio y la altura son 1
-   Cilindro
-   (
-      const int num_verts_per, // número de vértices del perfil original (m)
-      const unsigned nperfiles // número de perfiles (n)
+public:
+   // Constructor: crea el perfil original y llama a inicializar
+   // la base tiene el centro en el origen, el radio y la altura son 1
+   Cilindro(
+       const int num_verts_per, // número de vértices del perfil original (m)
+       const unsigned nperfiles // número de perfiles (n)
    );
-} ;
+};
 
 class Cono : public MallaRevol
 {
-   public:
+public:
    // Constructor: crea el perfil original y llama a inicializar
    // la base tiene el centro en el origen, el radio y altura son 1
-   Cono
-   (
-      const int num_verts_per, // número de vértices del perfil original (m)
-      const unsigned nperfiles // número de perfiles (n)
-   ) ;
-} ;
+   Cono(
+       const int num_verts_per, // número de vértices del perfil original (m)
+       const unsigned nperfiles // número de perfiles (n)
+   );
+};
 
 class Esfera : public MallaRevol
 {
-   public:
+public:
    // Constructor: crea el perfil original y llama a inicializar
    // La esfera tiene el centro en el origen, el radio es la unidad
-   Esfera
-   (
-      const int num_verts_per, // número de vértices del perfil original (M)
-      const unsigned nperfiles // número de perfiles (N)
-   ) ;
-} ;
+   Esfera(
+       const int num_verts_per, // número de vértices del perfil original (M)
+       const unsigned nperfiles // número de perfiles (N)
+   );
+};
+
+class Cono2 : public MallaRevol
+{
+public:
+   Cono2(const int num_verts_per, const unsigned nperfiles);
+};
 
 #endif

@@ -1,3 +1,6 @@
+// Nombre: Antonio, Apellidos: Luzón Ventura, Titulación: GIIADE.
+// email: luzonventura@correo.ugr.es, DNI o pasaporte: 77448897P
+//
 // *********************************************************************
 // **
 // ** Asignatura: INFORMÁTICA GRÁFICA
@@ -178,5 +181,28 @@ class MallaPiramideL : public MallaInd
    public:
       MallaPiramideL();
 };
+
+class PiramideEstrellaZ : public MallaInd
+{
+   public:
+      PiramideEstrellaZ(unsigned n);
+};
+
+// ---------------------------------------------------------------------
+
+class RejillaY : public MallaInd
+{
+   public:
+      RejillaY(unsigned n, unsigned m);
+};
+
+// ---------------------------------------------------------------------
+
+class MallaTorre : public MallaInd
+{
+   public:
+      MallaTorre(unsigned n);
+};
+
 
 #endif

@@ -1,7 +1,10 @@
+// Nombre: Antonio, Apellidos: Luzón Ventura, Titulación: GIIADE.
+// email: luzonventura@correo.ugr.es, DNI o pasaporte: 77448897P
+//
 // *********************************************************************
 // **
 // ** Asignatura: INFORMÁTICA GRÁFICA
-// ** 
+// **
 // ** Gestión de escenas (implementaciones)
 // ** Copyright (C) 2016-2023 Carlos Ureña
 // **
@@ -41,15 +44,15 @@
 #include "camara.h"
 #include "materiales-luces.h"
 #include "escena.h"
-
-
+#include "grafo-escena.h"
+#include "modelo-jer.h"
 
 // -----------------------------------------------------------------------------------------------
 
 Escena::Escena()
 {
-   // COMPLETAR: práctica 4: inicializar la colección de fuentes y el material inicial 
-   // 
+   // COMPLETAR: práctica 4: inicializar la colección de fuentes y el material inicial
+   //
    // Se debe dar un valor inicial adecuado a las variables de instancia 'col_fuentes' y 'material_ini'
    //
    // - Para 'col_fuentes', se usará una instancia de 'Col2Fuentes'
@@ -57,85 +60,85 @@ Escena::Escena()
    //
    // ...
 
-
    // COMPLETAR: práctica 5: añadir varias cámaras perspectiva y ortogonales al vector de cámaras de la escena
    //
    // Añadir sentencias 'push_back' para añadir varias cámaras al vector 'camaras'.
    // Eliminar este 'push_back' de la cámara orbital simple ('CamaraOrbitalSimple') por varias cámaras de 3 modos ('Camara3Modos')
-   camaras.push_back( new CamaraOrbitalSimple() );
-
+   camaras.push_back(new CamaraOrbitalSimple());
 }
 // -----------------------------------------------------------------------------------------------
 // visualiza la escena en la ventana actual, usando la configuración especificada en 'cv'
 // (pone 'apl->modo_selecion' a 'false' y queda así)
 
-void Escena::visualizarGL( )
+void Escena::visualizarGL()
 {
-   assert( apl != nullptr );
-   assert( apl->cauce != nullptr );
+   assert(apl != nullptr);
+   assert(apl->cauce != nullptr);
 
-   using namespace std ;
+   using namespace std;
    CError();
-   
+
    // recuperar el cauce del objeto 'apl' (simplemente para acortar notación)
-   Cauce * cauce = apl->cauce ;
+   Cauce *cauce = apl->cauce;
 
    // desactivar el modo de selección, por si acaso
-   apl->modo_seleccion = false ;
+   apl->modo_seleccion = false;
 
    // activar el cauce
-   cauce->activar() ;
+   cauce->activar();
    CError();
 
-   // recuperar la cámara actual de esta escena y: 
-   //   (1) fijar la camara actual del contexto de visualización  
-   //   (2) fijar las matrices 'modelview' y 'projection' en el 
+   // recuperar la cámara actual de esta escena y:
+   //   (1) fijar la camara actual del contexto de visualización
+   //   (2) fijar las matrices 'modelview' y 'projection' en el
    //       cauce gráfico (es decir: activar la cámara actual)
-   CamaraInteractiva * camara = camaras[ind_camara_actual] ; assert( camara != nullptr );
+   CamaraInteractiva *camara = camaras[ind_camara_actual];
+   assert(camara != nullptr);
 
-   const float ratio_vp = float(apl->ventana_tam_y)/float(apl->ventana_tam_x) ;
-   
-   //cout << "Escena::visualizarGL: dimen " << apl->ventana_tam_x << " x " << apl->ventana_tam_y << ", y/x == " << ratio_vp << endl ;
+   const float ratio_vp = float(apl->ventana_tam_y) / float(apl->ventana_tam_x);
 
-   camara->fijarRatioViewport( ratio_vp );
-   camara->activar( *cauce ) ;
+   // cout << "Escena::visualizarGL: dimen " << apl->ventana_tam_x << " x " << apl->ventana_tam_y << ", y/x == " << ratio_vp << endl ;
+
+   camara->fijarRatioViewport(ratio_vp);
+   camara->activar(*cauce);
    CError();
 
    // dibujar los ejes, si procede
-   if ( apl->dibujar_ejes  )
-      DibujarEjesSolido( *cauce ) ; // ver 'ig-aux.cpp' para la definición.
+   if (apl->dibujar_ejes)
+      DibujarEjesSolido(*cauce); // ver 'ig-aux.cpp' para la definición.
 
-   // fijar el color por defecto (inicial) en el cauce para dibujar los objetos 
+   // fijar el color por defecto (inicial) en el cauce para dibujar los objetos
    // (es blanco debido a que el fondo se rellena con un color oscuro y debe contrastar).
-   cauce->fijarColor( 1.0, 1.0, 1.0 );
-   
+   cauce->fijarColor(1.0, 1.0, 1.0);
+
    // fijar el modo de normales (útil para la práctica 4)
-   cauce->fijarUsarNormalesTri( apl->usar_normales_tri );
+   cauce->fijarUsarNormalesTri(apl->usar_normales_tri);
 
    // COMPLETAR: práctica 1: Configurar el modo de polígonos con 'glPolygonMode'
-   //  
-   // Usar 'glPolygonMode' en función del modo guardado en 'apl->modo_visu', 
+   //
+   // Usar 'glPolygonMode' en función del modo guardado en 'apl->modo_visu',
    // que puede ser: puntos,lineas o relleno.
    //
    // ...................
 
-   switch(apl->modo_visu){
-      case ModosVisu::lineas:
-         glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
-         break;
-      case ModosVisu::puntos:
-         glPolygonMode(GL_FRONT_AND_BACK,GL_POINT);
-         break;
-      case ModosVisu::relleno:
-         glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
-         break;
-      default:
-         throw std::invalid_argument("Error en escena.cpp/VisualizarGL");
+   switch (apl->modo_visu)
+   {
+   case ModosVisu::lineas:
+      glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+      break;
+   case ModosVisu::puntos:
+      glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
+      break;
+   case ModosVisu::relleno:
+      glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+      break;
+   default:
+      throw std::invalid_argument("Error en escena.cpp/VisualizarGL");
    }
 
    CError();
 
-   if ( apl->iluminacion )
+   if (apl->iluminacion)
    {
       // COMPLETAR: práctica 4: activar evaluación del MIL (y desactivar texturas)
       //
@@ -143,32 +146,32 @@ void Escena::visualizarGL( )
       // * activar la colección de fuentes de la escena
       // * activar el material inicial (usando 'pila_materiales')
       // ....
-
    }
    else // si la iluminación no está activada, deshabilitar MIL y texturas
-   {  
-      cauce->fijarEvalMIL( false );
-      cauce->fijarEvalText( false );
+   {
+      cauce->fijarEvalMIL(false);
+      cauce->fijarEvalText(false);
    }
 
-   //log("recupero objeto");
+   // log("recupero objeto");
    CError();
 
    // recuperar el objeto actual de esta escena
-   Objeto3D * objeto = objetos[ind_objeto_actual] ; assert( objeto != nullptr );
+   Objeto3D *objeto = objetos[ind_objeto_actual];
+   assert(objeto != nullptr);
 
    // COMPLETAR: práctica 1: visualizar el objeto actual ('objeto')
 
    objeto->visualizarGL();
 
-   // Visualizar las aristas del objeto, si procede (es decir: en modo relleno, con 
+   // Visualizar las aristas del objeto, si procede (es decir: en modo relleno, con
    // visualización de aristas activada)
 
-   if ( apl->dibujar_aristas && apl->modo_visu == ModosVisu::relleno ) 
+   if (apl->dibujar_aristas && apl->modo_visu == ModosVisu::relleno)
    {
       // desactivar iluminación y texturas (podrían estarlo a partir de prác. 4)
-      cauce->fijarEvalMIL( false );
-      cauce->fijarEvalText( false );
+      cauce->fijarEvalMIL(false);
+      cauce->fijarEvalText(false);
 
       // COMPLETAR: práctica 1: visualizar únicamente las aristas del objeto actual
       //
@@ -176,23 +179,22 @@ void Escena::visualizarGL( )
       // - antes de eso debemos de poner el cauce en un estado adecuado:
       //      - fijar el color a negro
       //      - fijar el modo de polígonos a modo 'lineas'
-      // 
+      //
       // ...........
       cauce->fijarColor(0.0f, 0.0f, 0.0f);
-      glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
+      glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
       objeto->visualizarGeomGL();
    }
-
 }
 // -----------------------------------------------------------------------------------------------
-// visualiza el objeto actual de la cámara, pero en modo selección 
+// visualiza el objeto actual de la cámara, pero en modo selección
 
-void Escena::visualizarGL_Seleccion(  )
+void Escena::visualizarGL_Seleccion()
 {
    // Comprobar algunas precondiciones y recuperar el cauce (para acortar la anotación)
-   assert( apl != nullptr );
-   assert( apl->cauce != nullptr );
-   Cauce * cauce = apl->cauce ;
+   assert(apl != nullptr);
+   assert(apl->cauce != nullptr);
+   Cauce *cauce = apl->cauce;
    CError();
 
    // COMPLETAR: práctica 5: visualizar el objeto raiz de esta escena en modo selección
@@ -200,11 +202,10 @@ void Escena::visualizarGL_Seleccion(  )
    // Se deben dar los siguientes pasos:
 
    // (1) Configurar estado de OpenGL:
-   //       + fijar el viewport (con 'glViewport') usando el tamaño de la ventana (guardado en 'apl'), 
+   //       + fijar el viewport (con 'glViewport') usando el tamaño de la ventana (guardado en 'apl'),
    //       + fijar el modo de polígonos a 'relleno', con 'glPolygonMode'
    //
    // ........
-
 
    // (2) Activar  y configurar el cauce:
    //      + Activar el cauce (con el método 'activar')
@@ -212,54 +213,49 @@ void Escena::visualizarGL_Seleccion(  )
    //      + Poner el color actual del cauce a '0' (por defecto los objetos no son seleccionables)
    // ........
 
-
    // (3) Limpiar el framebuffer (color y profundidad) con color (0,0,0) (para indicar que en ningún pixel hay nada seleccionable)
    // ........
 
-
-   // (4) Recuperar la cámara actual (con 'camaraActual') y activarla en el cauce, 
+   // (4) Recuperar la cámara actual (con 'camaraActual') y activarla en el cauce,
    // ........
 
-
-   // (5) Recuperar (con 'objetoActual') el objeto raíz actual de esta escena y 
+   // (5) Recuperar (con 'objetoActual') el objeto raíz actual de esta escena y
    //     visualizarlo con 'visualizarModoSeleccionGL'.
    // ........
-
 }
 
 // -----------------------------------------------------------------------------------------------
 // visualiza las normales del objeto actual de la escena
 
-void Escena::visualizarNormales(  )
+void Escena::visualizarNormales()
 {
    // comprobar precondiciones
-   assert( apl != nullptr );
-   Cauce * cauce = apl->cauce ; assert( cauce != nullptr );
+   assert(apl != nullptr);
+   Cauce *cauce = apl->cauce;
+   assert(cauce != nullptr);
 
-   // COMPLETAR: práctica 4: visualizar normales del objeto actual de la escena 
+   // COMPLETAR: práctica 4: visualizar normales del objeto actual de la escena
    //
    // Este código debe dar estos pasos:
    //
    // 1. Configurar el cauce de la forma adecuada, es decir:
    //      * Desactivar la iluminación (con 'fijarEvalMIL')
    //      * Desactivar el uso de texturas (con 'fijarEvalText')
-   //      * fijar el color (con 'fijarColor') 
+   //      * fijar el color (con 'fijarColor')
    // 2. Visualizar las normales del objeto actual de la escena (con el método 'visualizarNormalesGL')
 
    // ......
-
 }
-
 
 // -----------------------------------------------------------------------------------------------
 // pasa la cámara actual a la siguiente
 
 void Escena::siguienteCamara()
 {
-   assert( ind_camara_actual < camaras.size() );
-   ind_camara_actual = (ind_camara_actual+1 ) % camaras.size();
-   using namespace std ;
-   cout << "Cámara actual cambiada a: " << (ind_camara_actual+1) << "/" << camaras.size() << ": " << camaras[ind_camara_actual]->descripcion() << endl ;
+   assert(ind_camara_actual < camaras.size());
+   ind_camara_actual = (ind_camara_actual + 1) % camaras.size();
+   using namespace std;
+   cout << "Cámara actual cambiada a: " << (ind_camara_actual + 1) << "/" << camaras.size() << ": " << camaras[ind_camara_actual]->descripcion() << endl;
 }
 
 // -----------------------------------------------------------------------------------------------
@@ -267,55 +263,55 @@ void Escena::siguienteCamara()
 
 void Escena::siguienteObjeto()
 {
-   if ( objetos.size() == 0 )
-      return ;
-   assert( ind_objeto_actual < objetos.size() );
-   ind_objeto_actual = (ind_objeto_actual+1 ) % objetos.size();
-   using namespace std ;
+   if (objetos.size() == 0)
+      return;
+   assert(ind_objeto_actual < objetos.size());
+   ind_objeto_actual = (ind_objeto_actual + 1) % objetos.size();
+   using namespace std;
    cout << "Objeto actual cambiado a: " << objetoActual()->leerNombre()
-        << " (" << (ind_objeto_actual+1) << "/" << objetos.size() << ")." << endl  ;
+        << " (" << (ind_objeto_actual + 1) << "/" << objetos.size() << ")." << endl;
 }
 
 // -----------------------------------------------------------------------------------------------
 // devuelve puntero al objeto actual
 
-Objeto3D * Escena::objetoActual()
+Objeto3D *Escena::objetoActual()
 {
-   assert( ind_objeto_actual < objetos.size() );
-   assert( objetos[ind_objeto_actual] != nullptr );
-   return objetos[ind_objeto_actual] ;
+   assert(ind_objeto_actual < objetos.size());
+   assert(objetos[ind_objeto_actual] != nullptr);
+   return objetos[ind_objeto_actual];
 }
 // -----------------------------------------------------------------------------------------------
 // devuelve un puntero a la cámara actual
 
-CamaraInteractiva * Escena::camaraActual()
+CamaraInteractiva *Escena::camaraActual()
 {
-   assert( ind_camara_actual < camaras.size() );
-   assert( camaras[ind_camara_actual] != nullptr );
-   return camaras[ind_camara_actual] ;
+   assert(ind_camara_actual < camaras.size());
+   assert(camaras[ind_camara_actual] != nullptr);
+   return camaras[ind_camara_actual];
 }
 // -----------------------------------------------------------------------------------------------
 // devuelve un puntero a la colección de fuentes actual
 
-ColFuentesLuz * Escena::colFuentes()
+ColFuentesLuz *Escena::colFuentes()
 {
-   assert( col_fuentes != nullptr );
-   return col_fuentes ;
+   assert(col_fuentes != nullptr);
+   return col_fuentes;
 }
 // -----------------------------------------------------------------------------------------------
 
 Escena1::Escena1()
 {
-   using namespace std ;
-   cout << "Creando objetos de la práctica 1." << endl ;
+   using namespace std;
+   cout << "Creando objetos de la práctica 1." << endl;
 
-   objetos.push_back( new Cubo() );
+   objetos.push_back(new Cubo());
 
    // COMPLETAR: práctica 1: añadir resto de objetos a la escena 1
    //
-   // Añadir sentencias 'push_back' adicionales para agregar al 
+   // Añadir sentencias 'push_back' adicionales para agregar al
    // array 'objetos' otros objetos de la práctica 1
-   // 
+   //
    // .......
 
    objetos.push_back(new Tetraedro());
@@ -325,7 +321,6 @@ Escena1::Escena1()
    objetos.push_back(new MallaCuadrado());
    objetos.push_back(new MallaPiramideL());
    objetos.push_back(new EstrellaZ(10));
-
 }
 
 // -------------------------------------------------------------------------
@@ -337,8 +332,8 @@ Escena1::Escena1()
 
 Escena2::Escena2()
 {
-   using namespace std ;
-   cout << "Creando objetos de la práctica 2." << endl ;
+   using namespace std;
+   cout << "Creando objetos de la práctica 2." << endl;
 
    // Completar: práctica 2: añadir objetos a la escena 2
 
@@ -346,15 +341,19 @@ Escena2::Escena2()
    objetos.push_back(new MallaPLY("../plys/big_dodge.ply"));
 
    int nperfiles = 40; // Número de perfiles
-   int nveper = 8; // Número de vértices por perfil
+   int nveper = 8;     // Número de vértices por perfil
 
-   objetos.push_back(new MallaRevolPLY("../plys/peon.ply",nperfiles));
-   objetos.push_back(new Cilindro(nveper,nperfiles));
+   objetos.push_back(new MallaRevolPLY("../plys/peon.ply", nperfiles));
+   objetos.push_back(new Cilindro(nveper, nperfiles));
 
    nveper = 100;
-   
-   objetos.push_back(new Cono(nveper,nperfiles));
-   objetos.push_back(new Esfera(nveper,nperfiles));
+
+   objetos.push_back(new Cono(nveper, nperfiles));
+   objetos.push_back(new Esfera(nveper, nperfiles));
+
+   objetos.push_back(new PiramideEstrellaZ(6));
+   objetos.push_back(new RejillaY(10, 10));
+   objetos.push_back(new MallaTorre(5));
 }
 
 // -------------------------------------------------------------------------
@@ -366,25 +365,24 @@ Escena2::Escena2()
 
 Escena3::Escena3()
 {
+   using namespace std;
+   cout << "Creando objetos de la práctica 3." << endl;
 
-
+   objetos.push_back(new GrafoEstrellaX(10));
+   objetos.push_back(new GrafoCubos());
+   objetos.push_back(new Molino());
 }
 
 // ----------------------------------------------------------------------------
-// COMPLETAR: práctica 4: escribir implementación del constructor de 'Escena4'. 
+// COMPLETAR: práctica 4: escribir implementación del constructor de 'Escena4'.
 //
 // Añadir la implementación del constructor de la clase Escena4 para construir
 // los objetos que se indican en el guion de la práctica 4
 // .......
 
-
-
 // ----------------------------------------------------------------------
 // COMPLETAR: práctica 5: escribir implementación del constructor de 'Escena5'.
-// 
+//
 // Añadir la implementación del constructor de la clase Escena5 para construir
 // los objetos que se indican en el guion de la práctica 5
 // .......
-
-
-

@@ -1,7 +1,10 @@
+// Nombre: Antonio, Apellidos: Luzón Ventura, Titulación: GIIADE.
+// email: luzonventura@correo.ugr.es, DNI o pasaporte: 77448897P
+//
 // *********************************************************************
 // **
 // ** Asignatura: INFORMÁTICA GRÁFICA
-// ** 
+// **
 // ** Gestión de escenas (declaraciones)
 // ** Copyright (C) 2016-2023 Carlos Ureña
 // **
@@ -36,12 +39,10 @@
 #ifndef ESCENA_H
 #define ESCENA_H
 
-
 #include <vector>
 #include "aplicacion-ig.h"
 // #include "objeto3d.h"
 // #include "camara.h"
-
 
 // *************************************************************************
 // Clase Escena
@@ -49,60 +50,55 @@
 // Clase para objetos visualizables de tipo escena: incluye objetos, cámaras,
 // un material inicial, una colección de fuentes de luz, etc...
 
-
 class Escena
 {
-   public:
-
+public:
    // crea una escena con una cámara orbital simple, materiales y luces por defecto.
-   Escena() ;
+   Escena();
 
    // visualiza el objeto actual de la escena
-   void visualizarGL(  ) ;
+   void visualizarGL();
 
-   // visualiza el objeto actual de la escena, pero en modo selección 
-   void visualizarGL_Seleccion(  );
+   // visualiza el objeto actual de la escena, pero en modo selección
+   void visualizarGL_Seleccion();
 
    // pasa la cámara actual a la siguiente
-   void siguienteCamara() ;
+   void siguienteCamara();
 
    // devuelve un puntero a la cámara actual
-   CamaraInteractiva * camaraActual() ;
+   CamaraInteractiva *camaraActual();
 
    // pasa el objeto actual al siguiente
-   void siguienteObjeto() ;
+   void siguienteObjeto();
 
    // devuelve puntero al objeto actual
-   Objeto3D * objetoActual();
+   Objeto3D *objetoActual();
 
    // devuelve un puntero a la colección de fuentes actual
-   ColFuentesLuz * colFuentes();
+   ColFuentesLuz *colFuentes();
 
    // visualiza las normales del objeto actual de la escena
    void visualizarNormales();
-  
 
-   protected:
+protected:
    // vector de objetos (alternativos: se visualiza uno de ellos nada más)
-   std::vector<Objeto3D *> objetos ;
+   std::vector<Objeto3D *> objetos;
 
    // vector de cámaras (se usa una en cada momento)
-   std::vector<CamaraInteractiva *> camaras ;
+   std::vector<CamaraInteractiva *> camaras;
 
    // material por defecto que se activa antes de dibujar (con iluminación activada)
-   Material * material_ini = nullptr ;
+   Material *material_ini = nullptr;
 
    // colección de fuentes de luz que se usarán para dibujar, (con iluminación activada)
-   ColFuentesLuz * col_fuentes = nullptr ;
+   ColFuentesLuz *col_fuentes = nullptr;
 
    // índice de la cámara activa (en el vector 'camaras')
-   unsigned ind_camara_actual = 0 ;
+   unsigned ind_camara_actual = 0;
 
    // índice del objeto activo (en el vector 'objetos')
-   unsigned ind_objeto_actual = 0 ;
-
-} ;
-
+   unsigned ind_objeto_actual = 0;
+};
 
 // -------------------------------------------------------------------------
 // clase derivada de 'Escena', define un constructor que permite añadir
@@ -110,10 +106,9 @@ class Escena
 
 class Escena1 : public Escena
 {
-   public:
-      Escena1() ;
-} ;
-
+public:
+   Escena1();
+};
 
 // -------------------------------------------------------------------------
 // COMPLETAR: Práctica 2, 3, 4 y 5.
@@ -122,16 +117,14 @@ class Escena1 : public Escena
 
 class Escena2 : public Escena
 {
-   public:
-      Escena2() ;
-} ;
-
+public:
+   Escena2();
+};
 
 class Escena3 : public Escena
 {
-   public:
-      Escena3() ;
-} ;
-
+public:
+   Escena3();
+};
 
 #endif // ESCENA_H

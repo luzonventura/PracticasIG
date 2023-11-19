@@ -1,3 +1,6 @@
+// Nombre: Antonio, Apellidos: Luzón Ventura, Titulación: GIIADE.
+// email: luzonventura@correo.ugr.es, DNI o pasaporte: 77448897P
+
 #ifndef VBOS_VAOS_H
 #define VBOS_VAOS_H
 
