@@ -1,5 +1,5 @@
-// Daniel Alconchel Vázquez
-// InfoMates
+// Nombre: Antonio, Apellidos: Luzón Ventura, Titulación: GIIADE.
+// email: luzonventura@correo.ugr.es, DNI o pasaporte: 77448897P
 
 #include "grafo-escena.h"
 #include "malla-ind.h"
@@ -100,7 +100,7 @@ Molino::Molino()
     NodoGrafoEscena *cuerpo = new NodoGrafoEscena();
     NodoGrafoEscena *cuerpo1 = new NodoGrafoEscena();
     NodoGrafoEscena *cuerpo2 = new NodoGrafoEscena();
-    NodoGrafoEscena *cuadradocuerpo = new NodoGrafoEscena();
+    NodoGrafoEscena *cuadradoCuerpo = new NodoGrafoEscena();
     NodoGrafoEscena *puerta = new NodoGrafoEscena();
 
     NodoGrafoEscena *tejado = new NodoGrafoEscena();
@@ -110,15 +110,15 @@ Molino::Molino()
     NodoGrafoEscena *circulo2 = new NodoGrafoEscena();
     NodoGrafoEscena *circulo3 = new NodoGrafoEscena();
 
-    NodoGrafoEscena *cuadradoaspas = new NodoGrafoEscena();
+    NodoGrafoEscena *cuadradoAspas = new NodoGrafoEscena();
 
-    NodoGrafoEscena *conjuntoaspas = new NodoGrafoEscena();
+    NodoGrafoEscena *conjuntoAspas = new NodoGrafoEscena();
     NodoGrafoEscena *aspas = new NodoGrafoEscena();
     NodoGrafoEscena *aspa1 = new NodoGrafoEscena();
     NodoGrafoEscena *aspa2 = new NodoGrafoEscena();
-    NodoGrafoEscena *aspaprincipal1 = new NodoGrafoEscena();
-    NodoGrafoEscena *subaspa11 = new NodoGrafoEscena();
-    NodoGrafoEscena *subaspa12 = new NodoGrafoEscena();
+    NodoGrafoEscena *aspaPrincipal = new NodoGrafoEscena();
+    NodoGrafoEscena *subAspa11 = new NodoGrafoEscena();
+    NodoGrafoEscena *subAspa12 = new NodoGrafoEscena();
 
     NodoGrafoEscena *sol = new NodoGrafoEscena();
 
@@ -135,10 +135,10 @@ Molino::Molino()
     cuerpo2->agregar(new CilindroMolino(30, 50, 0.3, 0.9));
     cuerpo2->ponerColor({0.5, 0.5, 0.5});
 
-    cuadradocuerpo->agregar(translate(vec3(0.0, 0.8, 0.8)));
-    cuadradocuerpo->agregar(scale(vec3(0.1, 0.1, 0.1)));
-    cuadradocuerpo->agregar(new CuboMolino());
-    cuadradocuerpo->ponerColor({0.961, 0.816, 0.855});
+    cuadradoCuerpo->agregar(translate(vec3(0.0, 0.8, 0.8)));
+    cuadradoCuerpo->agregar(scale(vec3(0.1, 0.1, 0.1)));
+    cuadradoCuerpo->agregar(new CuboMolino());
+    cuadradoCuerpo->ponerColor({0.961, 0.816, 0.855});
 
     // Puerta
     unsigned ind_rot_puerta = puerta->agregar(rotate(0.0f, vec3{0.0, 1.0, 0.0}));
@@ -151,7 +151,7 @@ Molino::Molino()
     puerta->ponerColor({0.329, 0.2, 0.071});
 
     cuerpo->agregar(puerta);
-    cuerpo->agregar(cuadradocuerpo);
+    cuerpo->agregar(cuadradoCuerpo);
     cuerpo->agregar(cuerpo1);
     cuerpo->agregar(cuerpo2);
 
@@ -181,33 +181,35 @@ Molino::Molino()
     circulos->agregar(circulo2);
     circulos->agregar(circulo3);
 
+    cuerpo->agregar(circulos);
+
     // Cuadrado del conjunto de aspas (podría haber reutilizado
     // el del cuerpo)
-    cuadradoaspas->agregar(translate(vec3(0.0, 0.8, 0.93)));
-    cuadradoaspas->agregar(scale(vec3(0.04, 0.04, 0.04)));
-    cuadradoaspas->agregar(new CuboMolino());
-    cuadradoaspas->ponerColor({0.329, 0.2, 0.071});
+    cuadradoAspas->agregar(translate(vec3(0.0, 0.8, 0.93)));
+    cuadradoAspas->agregar(scale(vec3(0.04, 0.04, 0.04)));
+    cuadradoAspas->agregar(new CuboMolino());
+    cuadradoAspas->ponerColor({0.329, 0.2, 0.071});
 
     // Aspa principal 1
-    aspaprincipal1->agregar(translate(vec3(0.0, 0.82, 1.02)));
-    aspaprincipal1->agregar(scale(vec3(0.04, 0.8, 0.05)));
-    aspaprincipal1->agregar(new CuboMolino());
-    aspaprincipal1->ponerColor({0.329, 0.2, 0.071});
-    aspa1->agregar(aspaprincipal1);
+    aspaPrincipal->agregar(translate(vec3(0.0, 0.82, 1.02)));
+    aspaPrincipal->agregar(scale(vec3(0.04, 0.8, 0.05)));
+    aspaPrincipal->agregar(new CuboMolino());
+    aspaPrincipal->ponerColor({0.329, 0.2, 0.071});
+    aspa1->agregar(aspaPrincipal);
 
     // Subaspa 1
-    subaspa11->agregar(translate(vec3(0.12, 1.34, 1.0)));
-    subaspa11->agregar(scale(vec3(0.08, 0.28, 0.0)));
-    subaspa11->agregar(new CuboMolino());
-    subaspa11->ponerColor({1.0, 1.0, 1.0});
-    aspa1->agregar(subaspa11);
+    subAspa11->agregar(translate(vec3(0.12, 1.34, 1.0)));
+    subAspa11->agregar(scale(vec3(0.08, 0.28, 0.0)));
+    subAspa11->agregar(new CuboMolino());
+    subAspa11->ponerColor({1.0, 1.0, 1.0});
+    aspa1->agregar(subAspa11);
 
     // Subaspa 2
-    subaspa12->agregar(translate(vec3(-0.12, 0.3, 1.0)));
-    subaspa12->agregar(scale(vec3(0.08, 0.28, 0.0)));
-    subaspa12->agregar(new CuboMolino());
-    subaspa12->ponerColor({1.0, 1.0, 1.0});
-    aspa1->agregar(subaspa12);
+    subAspa12->agregar(translate(vec3(-0.12, 0.3, 1.0)));
+    subAspa12->agregar(scale(vec3(0.08, 0.28, 0.0)));
+    subAspa12->agregar(new CuboMolino());
+    subAspa12->ponerColor({1.0, 1.0, 1.0});
+    aspa1->agregar(subAspa12);
 
     aspas->agregar(aspa1);
 
@@ -237,11 +239,10 @@ Molino::Molino()
     nube1->agregar(translate(vec3(2.0, 2.0, -1.0)));
     nube1->agregar(scale(vec3(1.0, 0.7, 0.4)));
     nube1->agregar(new Esfera(8, 40));
+    nube1->ponerColor({0.902, 0.898, 0.886});
 
     nube2->agregar(translate(vec3(0.8, 0.5, -1.0)));
-    nube2->ponerColor({0.5, 0.5, 0.2});
     nube2->agregar(nube1);
-    nube1->ponerColor({0.902, 0.898, 0.886});
 
     nube3->agregar(translate(vec3(2.5, 0, 0)));
     nube3->agregar(nube1);
@@ -250,17 +251,16 @@ Molino::Molino()
     nubes->agregar(nube2);
     nubes->agregar(nube3);
 
-    unsigned ind_rot_conjuntoaspas = conjuntoaspas->agregar(rotate(0.0f, vec3{0.0, 0.0, 1.0}));
-    pm_rot_aspas = conjuntoaspas->leerPtrMatriz(ind_rot_conjuntoaspas);
+    unsigned ind_rot_conjuntoAspas = conjuntoAspas->agregar(rotate(0.0f, vec3{0.0, 0.0, 1.0}));
+    pm_rot_aspas = conjuntoAspas->leerPtrMatriz(ind_rot_conjuntoAspas);
 
-    conjuntoaspas->agregar(aspas);
-    conjuntoaspas->agregar(cuadradoaspas);
+    conjuntoAspas->agregar(aspas);
+    conjuntoAspas->agregar(cuadradoAspas);
 
     molino->agregar(cuerpo);
     molino->agregar(base);
     molino->agregar(tejado);
-    molino->agregar(circulos);
-    molino->agregar(conjuntoaspas);
+    molino->agregar(conjuntoAspas);
     molino->agregar(sol);
     molino->agregar(nubes);
 

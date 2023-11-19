@@ -1,5 +1,5 @@
-// Daniel Alconchel Vázquez 
-// Informática y Matemáticas
+// Nombre: Antonio, Apellidos: Luzón Ventura, Titulación: GIIADE.
+// email: luzonventura@correo.ugr.es, DNI o pasaporte: 77448897P
 
 #ifndef MODELO_JER_HPP
 #define MODELO_JER_HPP
