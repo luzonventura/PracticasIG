@@ -10,7 +10,6 @@
 using namespace std;
 using namespace glm;
 
-
 Circulo::Circulo(float radio, const int num_verts)
 {
     vertices = vector<vec3>();
@@ -276,7 +275,7 @@ Molino::Molino()
     esfera->agregar(new Esfera(30, 40));
     esfera->ponerColor({0.6, 1.0, 0.7});
 
-    // Base 
+    // Base
     NodoGrafoEscena *base = new NodoGrafoEscena();
     base->agregar(scale(vec3(4.0, 4.0, 4.0)));
     base->ponerColor({0.157, 0.471, 0.024});
@@ -304,7 +303,7 @@ void Molino::actualizarEstadoParametro(const unsigned iParam, const float t_sec)
     {
     // Rotación aspas
     case 0:
-        *pm_rot_aspas = glm::rotate(-t_sec*5.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+        *pm_rot_aspas = glm::rotate(-t_sec * 5.0f, glm::vec3(0.0f, 1.0f, 0.0f));
         break;
     // Rotación puerta
     case 1:
@@ -320,7 +319,7 @@ void Molino::actualizarEstadoParametro(const unsigned iParam, const float t_sec)
         break;
     // Translación sol
     case 3:
-        *pm_rot_sol = rotate(t_sec/2, vec3{0.0, 1.0, 0.0});
+        *pm_rot_sol = rotate(t_sec / 2, vec3{0.0, 1.0, 0.0});
         break;
     // Translación tejado
     case 4:
@@ -330,4 +329,4 @@ void Molino::actualizarEstadoParametro(const unsigned iParam, const float t_sec)
         *pm_trans_esfera = translate(vec3{0.0, 1.30 * abs(sin(2 * M_PI * t_sec / 20)), 0.0});
         break;
     }
-} 
+}

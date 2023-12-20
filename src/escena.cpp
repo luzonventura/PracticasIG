@@ -46,7 +46,7 @@
 #include "escena.h"
 #include "grafo-escena.h"
 #include "modelo-jer.h"
-#include "examen-ec-p123.h"
+// #include "examen-ec-p123.h"
 
 // -----------------------------------------------------------------------------------------------
 
@@ -60,6 +60,9 @@ Escena::Escena()
    // - Se deben de elegir los parámetros del material.
    //
    // ...
+
+   col_fuentes = new Col2Fuentes();
+   material_ini = new Material();
 
    // COMPLETAR: práctica 5: añadir varias cámaras perspectiva y ortogonales al vector de cámaras de la escena
    //
@@ -246,6 +249,12 @@ void Escena::visualizarNormales()
    // 2. Visualizar las normales del objeto actual de la escena (con el método 'visualizarNormalesGL')
 
    // ......
+
+   cauce->fijarEvalMIL(false);
+   cauce->fijarEvalText(false);
+   cauce->fijarColor(1.0f, 0.0f, 0.0f);
+
+   objetos[ind_objeto_actual]->visualizarNormalesGL();
 }
 
 // -----------------------------------------------------------------------------------------------
@@ -306,7 +315,7 @@ Escena1::Escena1()
    using namespace std;
    cout << "Creando objetos de la práctica 1." << endl;
 
-   //objetos.push_back(new Cubo());
+   // objetos.push_back(new Cubo());
 
    // COMPLETAR: práctica 1: añadir resto de objetos a la escena 1
    //
@@ -315,6 +324,7 @@ Escena1::Escena1()
    //
    // .......
 
+   objetos.push_back(new Cubo());
    objetos.push_back(new Tetraedro());
    objetos.push_back(new CuboColores());
    objetos.push_back(new CasaX());
@@ -323,7 +333,7 @@ Escena1::Escena1()
    objetos.push_back(new MallaPiramideL());
    objetos.push_back(new EstrellaZ(10));
 
-   objetos.push_back(new P1MallaCubo());
+   // objetos.push_back(new P1MallaCubo());
 }
 
 // -------------------------------------------------------------------------
@@ -357,7 +367,7 @@ Escena2::Escena2()
    objetos.push_back(new PiramideEstrellaZ(6));
    objetos.push_back(new MallaTorre(5));
 
-   objetos.push_back(new P2Rejilla(30,40));
+   // objetos.push_back(new P2Rejilla(30,40));
 }
 
 // -------------------------------------------------------------------------
@@ -375,8 +385,8 @@ Escena3::Escena3()
    objetos.push_back(new GrafoEstrellaX(10));
    objetos.push_back(new GrafoCubos());
    objetos.push_back(new Molino());
-   //objetos.push_back(new P3Caja());
-   //objetos.push_back(new CajaEsfera());
+   // objetos.push_back(new P3Caja());
+   // objetos.push_back(new CajaEsfera());
 }
 
 // ----------------------------------------------------------------------------
@@ -385,6 +395,12 @@ Escena3::Escena3()
 // Añadir la implementación del constructor de la clase Escena4 para construir
 // los objetos que se indican en el guion de la práctica 4
 // .......
+
+Escena4::Escena4()
+{
+   using namespace std;
+   cout << "Creando objetos de la práctica 4." << endl;
+}
 
 // ----------------------------------------------------------------------
 // COMPLETAR: práctica 5: escribir implementación del constructor de 'Escena5'.

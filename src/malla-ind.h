@@ -4,11 +4,11 @@
 // *********************************************************************
 // **
 // ** Asignatura: INFORMÁTICA GRÁFICA
-// ** 
+// **
 // ** Mallas indexadas (declaraciones)
 // ** Copyright (C) 2016-2023 Carlos Ureña
 // **
-// ** Declaración de las clases 
+// ** Declaración de las clases
 // **        + MallaInd: malla indexada de triángulos (derivada de Objeto3D)
 // **        + MallaPLY: malla indexada de triángulos, leída de un PLY (derivada de MallaInd)
 // **        + algunas clases derivadas de MallaInd.
@@ -31,81 +31,73 @@
 #ifndef IG_MALLAIND_HPP
 #define IG_MALLAIND_HPP
 
-#include <vector>       // usar std::vector
+#include <vector> // usar std::vector
 #include <ig-aux.h>
 #include <vaos-vbos.h>
 
-#include "objeto3d.h"   // declaración de 'Objeto3D'
-
+#include "objeto3d.h" // declaración de 'Objeto3D'
 
 // ---------------------------------------------------------------------
 // clase para objetos gráficos genéricos
 
 class MallaInd : public Objeto3D
 {
-   
-   protected:
-      // COMPLETAR: incluir aquí las variables y métodos privados que sean
-      // necesarios para una malla indexada (y que no aparezcan ya declarados en esta plantilla)
-      // ......
 
-      std::vector<glm::vec3>  vertices ;
-      std::vector<glm::uvec3> triangulos ;
+protected:
+   // COMPLETAR: incluir aquí las variables y métodos privados que sean
+   // necesarios para una malla indexada (y que no aparezcan ya declarados en esta plantilla)
+   // ......
 
-      std::vector<glm::vec3> col_ver ;   // colores de los vértices
-      std::vector<glm::vec3> nor_ver ;   // normales de vértices
-      std::vector<glm::vec3> nor_tri ;   // normales de triángulos
-      std::vector<glm::vec2> cc_tt_ver ; // coordenadas de textura de los vértices
-      
-      // descriptor del VAO con los vértices, triángulos y atributos de esta malla indexada
-      // (se crea bajo demanda en 'visualizarGL')
-      DescrVAO * dvao = nullptr  ;
+   std::vector<glm::vec3> vertices;
+   std::vector<glm::uvec3> triangulos;
 
-      // VAO con los segmentos de las normales (vis. con GL_LINES)
-      // ( se crea bajo demanda en 'visualizarNormales')
-      DescrVAO * dvao_normales = nullptr ;
+   std::vector<glm::vec3> col_ver;   // colores de los vértices
+   std::vector<glm::vec3> nor_ver;   // normales de vértices
+   std::vector<glm::vec3> nor_tri;   // normales de triángulos
+   std::vector<glm::vec2> cc_tt_ver; // coordenadas de textura de los vértices
 
-      std::vector<glm::vec3> segmentos_normales ; // guarda los segmentos de normales
-      
+   // descriptor del VAO con los vértices, triángulos y atributos de esta malla indexada
+   // (se crea bajo demanda en 'visualizarGL')
+   DescrVAO *dvao = nullptr;
 
-      // normales de triángulos y vértices
-      void calcularNormales();
+   // VAO con los segmentos de las normales (vis. con GL_LINES)
+   // ( se crea bajo demanda en 'visualizarNormales')
+   DescrVAO *dvao_normales = nullptr;
 
-      // calculo de las normales de triángulos (solo si no están creadas ya)
-      void calcularNormalesTriangulos() ;
+   std::vector<glm::vec3> segmentos_normales; // guarda los segmentos de normales
 
+   // normales de triángulos y vértices
+   void calcularNormales();
 
+   // calculo de las normales de triángulos (solo si no están creadas ya)
+   void calcularNormalesTriangulos();
 
-   public:
-      // crea una malla vacía (nombre: "malla indexada nueva vacía")
-      MallaInd() ;
+public:
+   // crea una malla vacía (nombre: "malla indexada nueva vacía")
+   MallaInd();
 
-      // crea una malla vacía con un nombre concreto:
-      MallaInd( const std::string & nombreIni );
+   // crea una malla vacía con un nombre concreto:
+   MallaInd(const std::string &nombreIni);
 
-      // Visualizar el objeto con OpenGL
-      // usa las tablas de normales, colores y coordenadas de textura, si no están vacías.
-      virtual void visualizarGL(  ) ;
+   // Visualizar el objeto con OpenGL
+   // usa las tablas de normales, colores y coordenadas de textura, si no están vacías.
+   virtual void visualizarGL();
 
-      // Visualizar pura y simplemente la geometría, sin colores, normales, coord. text. etc...
-      // (se supone que el estado de OpenGL está fijado antes de esta llamada de alguna forma adecuada)
-      virtual void visualizarGeomGL(  ) ;
+   // Visualizar pura y simplemente la geometría, sin colores, normales, coord. text. etc...
+   // (se supone que el estado de OpenGL está fijado antes de esta llamada de alguna forma adecuada)
+   virtual void visualizarGeomGL();
 
-      // Visualizar las normales del objeto, si no tiene tabla de normales imprime advertencia y no hace nada.
-      virtual void visualizarNormalesGL() ;
+   // Visualizar las normales del objeto, si no tiene tabla de normales imprime advertencia y no hace nada.
+   virtual void visualizarNormalesGL();
 
-      // visualizar el objeto en 'modo seleccion', es decir, sin iluminación y con los colores 
-      // basados en los identificadores de los objetos
-      virtual void visualizarModoSeleccionGL() ;
+   // visualizar el objeto en 'modo seleccion', es decir, sin iluminación y con los colores
+   // basados en los identificadores de los objetos
+   virtual void visualizarModoSeleccionGL();
 
-      // métodos para acceder a las tablas de una malla (acceso de lectura)
-      const std::vector<glm::vec3> & refVertices()   const { return vertices ;  } 
-      const std::vector<glm::uvec3> & refTriangulos() const { return triangulos ; }
-      
-
-
-     
-} ;
+   // métodos para acceder a las tablas de una malla (acceso de lectura)
+   const std::vector<glm::vec3> &refVertices() const { return vertices; }
+   const std::vector<glm::uvec3> &refTriangulos() const { return triangulos; }
+};
 // ---------------------------------------------------------------------
 // Clase para mallas obtenidas de un archivo 'ply'
 // es un tipo de malla indexada que define un nuevo constructor
@@ -113,96 +105,94 @@ class MallaInd : public Objeto3D
 
 class MallaPLY : public MallaInd
 {
-   public:
-      MallaPLY( const std::string & nombre_arch ) ;
-} ;
-
+public:
+   MallaPLY(const std::string &nombre_arch);
+};
 
 // ---------------------------------------------------------------------
 
 class Cubo : public MallaInd
 {
-   public:
-      Cubo();
+public:
+   Cubo();
 };
 
 // ---------------------------------------------------------------------
 
 class Tetraedro : public MallaInd
 {
-   public:
-      Tetraedro();
+public:
+   Tetraedro();
 };
 
 // ---------------------------------------------------------------------
 
 class CuboColores : public MallaInd
 {
-   public:
-      CuboColores();
+public:
+   CuboColores();
 };
 
 // ---------------------------------------------------------------------
 
 class EstrellaZ : public MallaInd
 {
-   public:
-      EstrellaZ(unsigned n);
+public:
+   EstrellaZ(unsigned n);
 };
 
 // ---------------------------------------------------------------------
 
 class CasaX : public MallaInd
 {
-   public:
-      CasaX();
+public:
+   CasaX();
 };
 
 // ---------------------------------------------------------------------
 
 class MallaTriangulo : public MallaInd
 {
-   public:
-      MallaTriangulo();
+public:
+   MallaTriangulo();
 };
 
 // ---------------------------------------------------------------------
 
 class MallaCuadrado : public MallaInd
 {
-   public:
-      MallaCuadrado();
+public:
+   MallaCuadrado();
 };
 
 // ---------------------------------------------------------------------
 
 class MallaPiramideL : public MallaInd
 {
-   public:
-      MallaPiramideL();
+public:
+   MallaPiramideL();
 };
 
 class PiramideEstrellaZ : public MallaInd
 {
-   public:
-      PiramideEstrellaZ(unsigned n);
+public:
+   PiramideEstrellaZ(unsigned n);
 };
 
 // ---------------------------------------------------------------------
 
 class RejillaY : public MallaInd
 {
-   public:
-      RejillaY(unsigned n, unsigned m);
+public:
+   RejillaY(unsigned n, unsigned m);
 };
 
 // ---------------------------------------------------------------------
 
 class MallaTorre : public MallaInd
 {
-   public:
-      MallaTorre(unsigned n);
+public:
+   MallaTorre(unsigned n);
 };
-
 
 #endif
