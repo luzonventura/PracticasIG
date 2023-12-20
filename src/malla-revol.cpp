@@ -128,10 +128,10 @@ Cilindro::Cilindro(
 
    inicializar(perfil, nperfiles);
 
-   for (unsigned i = 0; i < vertices.size(); i++)
+   /* for (unsigned i = 0; i < vertices.size(); i++)
    {
       col_ver.push_back({vertices.at(i).x, vertices.at(i).y, vertices.at(i).z});
-   }
+   } */
 }
 
 // *****************************************************************************

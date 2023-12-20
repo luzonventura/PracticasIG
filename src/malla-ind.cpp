@@ -568,7 +568,8 @@ PiramideEstrellaZ::PiramideEstrellaZ(unsigned n)
 
 // ****************************************************************************
 
-RejillaY::RejillaY(unsigned n, unsigned m){
+RejillaY::RejillaY(unsigned n, unsigned m)
+: MallaInd("RejillaY") {
    assert(n > 1 && m > 1);
    float escala_n = 1.0f/(n-1);
    float escala_m = 1.0f/(m-1);

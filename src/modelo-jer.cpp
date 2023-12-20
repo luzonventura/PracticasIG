@@ -10,6 +10,36 @@
 using namespace std;
 using namespace glm;
 
+
+Circulo::Circulo(float radio, const int num_verts)
+{
+    vertices = vector<vec3>();
+    triangulos = vector<uvec3>();
+    for (int i = 0; i < num_verts; i++)
+    {
+        vertices.push_back(vec3(radio * cos(2 * M_PI * i / num_verts), 0.0, radio * sin(2 * M_PI * i / num_verts)));
+    }
+    for (int i = 0; i < num_verts - 2; i++)
+    {
+        triangulos.push_back(uvec3(0, i + 1, i + 2));
+    }
+}
+
+/* SemiCirculo::SemiCirculo(float radio, const int num_verts) {
+        vertices = vector<vec3>();
+        triangulos = vector<uvec3>();
+
+        // Generar vértices para un semicírculo
+        for (int i = 0; i <= num_verts; i++) {
+            vertices.push_back(vec3(radio * cos(M_PI * i / num_verts), 0.0, radio * sin(M_PI * i / num_verts)));
+        }
+
+        // Generar triángulos para un semicírculo
+        for (int i = 0; i < num_verts - 1; i++) {
+            triangulos.push_back(uvec3(0, i + 1, i + 2));
+        }
+    } */
+
 CilindroMolino::CilindroMolino(const int num_verts_per, const unsigned nperfiles, float altura, float radio)
 {
     vector<vec3> perfil = vector<vec3>();
@@ -31,20 +61,6 @@ ConoMolino::ConoMolino(const int num_verts_per, const unsigned nperfiles)
     }
 
     inicializar(perfil, nperfiles);
-}
-
-CirculoMolino::CirculoMolino(float radio, const int num_verts)
-{
-    vertices = vector<vec3>();
-    triangulos = vector<uvec3>();
-    for (int i = 0; i < num_verts; i++)
-    {
-        vertices.push_back(vec3(radio * cos(2 * M_PI * i / num_verts), 0.0, radio * sin(2 * M_PI * i / num_verts)));
-    }
-    for (int i = 0; i < num_verts - 2; i++)
-    {
-        triangulos.push_back(uvec3(0, i + 1, i + 2));
-    }
 }
 
 CuboMolino::CuboMolino()
@@ -100,15 +116,13 @@ Molino::Molino()
     NodoGrafoEscena *cuerpo = new NodoGrafoEscena();
     NodoGrafoEscena *cuerpo1 = new NodoGrafoEscena();
     NodoGrafoEscena *cuerpo2 = new NodoGrafoEscena();
-    NodoGrafoEscena *cuadradoCuerpo = new NodoGrafoEscena();
     NodoGrafoEscena *puerta = new NodoGrafoEscena();
-
-    NodoGrafoEscena *tejado = new NodoGrafoEscena();
-
-    NodoGrafoEscena *circulos = new NodoGrafoEscena();
     NodoGrafoEscena *circulo1 = new NodoGrafoEscena();
     NodoGrafoEscena *circulo2 = new NodoGrafoEscena();
-    NodoGrafoEscena *circulo3 = new NodoGrafoEscena();
+
+    NodoGrafoEscena *tejado = new NodoGrafoEscena();
+    NodoGrafoEscena *cono = new NodoGrafoEscena();
+    NodoGrafoEscena *circulotejado = new NodoGrafoEscena();
 
     NodoGrafoEscena *cuadradoAspas = new NodoGrafoEscena();
 
@@ -127,7 +141,9 @@ Molino::Molino()
     NodoGrafoEscena *nube2 = new NodoGrafoEscena();
     NodoGrafoEscena *nube3 = new NodoGrafoEscena();
 
-    // Cuerpo (Cilindro1, cilindro2 y cuadrado)
+    NodoGrafoEscena *esfera = new NodoGrafoEscena();
+
+    // Cuerpo (CilindroMolino1, CilindroMolino2 y cuadrado)
     cuerpo1->agregar(translate(vec3(0.0, 0.3, 0.0)));
     cuerpo1->agregar(new CilindroMolino(30, 50, 1.15, 0.8));
     cuerpo1->ponerColor({0.961, 0.816, 0.855});
@@ -135,10 +151,13 @@ Molino::Molino()
     cuerpo2->agregar(new CilindroMolino(30, 50, 0.3, 0.9));
     cuerpo2->ponerColor({0.5, 0.5, 0.5});
 
-    cuadradoCuerpo->agregar(translate(vec3(0.0, 0.8, 0.8)));
-    cuadradoCuerpo->agregar(scale(vec3(0.1, 0.1, 0.1)));
-    cuadradoCuerpo->agregar(new CuboMolino());
-    cuadradoCuerpo->ponerColor({0.961, 0.816, 0.855});
+    // Tapas
+    circulo1->agregar(new Circulo(0.905, 30));
+    circulo1->ponerColor({0.5, 0.5, 0.5});
+
+    circulo2->agregar(translate(vec3(0.0, 0.3, 0.0)));
+    circulo2->agregar(new Circulo(0.905, 30));
+    circulo2->ponerColor({0.5, 0.5, 0.5});
 
     // Puerta
     unsigned ind_rot_puerta = puerta->agregar(rotate(0.0f, vec3{0.0, 1.0, 0.0}));
@@ -150,38 +169,20 @@ Molino::Molino()
     puerta->agregar(new CuboMolino());
     puerta->ponerColor({0.329, 0.2, 0.071});
 
-    cuerpo->agregar(puerta);
-    cuerpo->agregar(cuadradoCuerpo);
     cuerpo->agregar(cuerpo1);
     cuerpo->agregar(cuerpo2);
+    cuerpo->agregar(circulo1);
+    cuerpo->agregar(circulo2);
+    cuerpo->agregar(puerta);
 
     // Tejado
-    tejado->agregar(translate(vec3(0.0, 1.35, 0.0)));
-    tejado->agregar(new ConoMolino(30, 20));
-    tejado->ponerColor({0.5, 0.5, 0.5});
+    cono->agregar(translate(vec3(0.0, 1.35, 0.0)));
+    cono->agregar(new ConoMolino(30, 20));
+    cono->ponerColor({0.5, 0.5, 0.5});
 
-    NodoGrafoEscena *base = new NodoGrafoEscena();
-    base->agregar(scale(vec3(4.0, 4.0, 4.0)));
-    base->ponerColor({0.157, 0.471, 0.024});
-    base->agregar(new Base());
-
-    // Tapas
-    circulo1->agregar(new CirculoMolino(0.905, 30));
-    circulo1->ponerColor({0.5, 0.5, 0.5});
-
-    circulo2->agregar(translate(vec3(0.0, 0.3, 0.0)));
-    circulo2->agregar(new CirculoMolino(0.905, 30));
-    circulo2->ponerColor({0.5, 0.5, 0.5});
-
-    circulo3->agregar(translate(vec3(0.0, 1.35, 0.0)));
-    circulo3->agregar(new CirculoMolino(0.998, 30));
-    circulo3->ponerColor({0.5, 0.5, 0.5});
-
-    circulos->agregar(circulo1);
-    circulos->agregar(circulo2);
-    circulos->agregar(circulo3);
-
-    cuerpo->agregar(circulos);
+    circulotejado->agregar(translate(vec3(0.0, 1.35, 0.0)));
+    circulotejado->agregar(new Circulo(0.998, 30));
+    circulotejado->ponerColor({0.5, 0.5, 0.5});
 
     // Cuadrado del conjunto de aspas (podría haber reutilizado
     // el del cuerpo)
@@ -220,17 +221,33 @@ Molino::Molino()
 
     aspas->agregar(aspa2);
 
+    unsigned ind_rot_conjuntoAspas = conjuntoAspas->agregar(rotate(0.0f, vec3{0.0, 1.0, 0.0}));
+    pm_rot_aspas = conjuntoAspas->leerPtrMatriz(ind_rot_conjuntoAspas);
+
+    conjuntoAspas->agregar(translate(vec3(0.0, 1.4, 0.8)));
+    conjuntoAspas->agregar(rotate(float(M_PI / 2), vec3{-1.0, 0.0, 0.0}));
+
+    conjuntoAspas->agregar(aspas);
+    conjuntoAspas->agregar(cuadradoAspas);
+
+    unsigned ind_trans_tejado = tejado->agregar(translate(vec3(0.0, 0.0, 0.0)));
+    pm_trans_tejado = tejado->leerPtrMatriz(ind_trans_tejado);
+
+    tejado->agregar(cono);
+    tejado->agregar(circulotejado);
+    tejado->agregar(conjuntoAspas);
+
     // Sol
-    unsigned ind_rot_sol = sol->agregar(translate(vec3(0.0, 0.0, 0.0)));
+    unsigned ind_rot_sol = sol->agregar(rotate(0.0f, vec3{0.0, 1.0, 0.0}));
     pm_rot_sol = sol->leerPtrMatriz(ind_rot_sol);
 
-    sol->agregar(translate(vec3(-2.0, 2.5, -1.0)));
+    sol->agregar(translate(vec3(-2.0, 3.0, -1.0)));
     sol->agregar(scale(vec3(0.5, 0.5, 0.5)));
     sol->agregar(new Esfera(8, 40));
     sol->ponerColor({0.91, 0.839, 0.024});
 
-    unsigned int ind_rot_nubes = nubes->agregar(translate(vec3(0.0, 0.0, 0.0)));
-    pm_rot_nubes = nubes->leerPtrMatriz(ind_rot_nubes);
+    unsigned int ind_trans_nubes = nubes->agregar(translate(vec3(0.0, 0.0, 0.0)));
+    pm_trans_nubes = nubes->leerPtrMatriz(ind_trans_nubes);
 
     // Nubes
     nubes->agregar(scale(vec3(0.7, 0.7, 0.7)));
@@ -251,25 +268,33 @@ Molino::Molino()
     nubes->agregar(nube2);
     nubes->agregar(nube3);
 
-    unsigned ind_rot_conjuntoAspas = conjuntoAspas->agregar(rotate(0.0f, vec3{0.0, 0.0, 1.0}));
-    pm_rot_aspas = conjuntoAspas->leerPtrMatriz(ind_rot_conjuntoAspas);
+    // Esfera
+    unsigned int ind_trans_esfera = esfera->agregar(translate(vec3(0.0, 0.0, 0.0)));
+    pm_trans_esfera = esfera->leerPtrMatriz(ind_trans_esfera);
+    esfera->agregar(translate(vec3(0.0, 0.75, 0.0)));
+    esfera->agregar(scale(vec3(0.5, 0.5, 0.5)));
+    esfera->agregar(new Esfera(30, 40));
+    esfera->ponerColor({0.6, 1.0, 0.7});
 
-    conjuntoAspas->agregar(aspas);
-    conjuntoAspas->agregar(cuadradoAspas);
+    // Base 
+    NodoGrafoEscena *base = new NodoGrafoEscena();
+    base->agregar(scale(vec3(4.0, 4.0, 4.0)));
+    base->ponerColor({0.157, 0.471, 0.024});
+    base->agregar(new Base());
 
     molino->agregar(cuerpo);
     molino->agregar(base);
     molino->agregar(tejado);
-    molino->agregar(conjuntoAspas);
     molino->agregar(sol);
     molino->agregar(nubes);
+    molino->agregar(esfera);
 
     agregar(molino);
 }
 
 unsigned Molino::leerNumParametros() const
 {
-    return 4;
+    return 6;
 }
 
 void Molino::actualizarEstadoParametro(const unsigned iParam, const float t_sec)
@@ -279,7 +304,7 @@ void Molino::actualizarEstadoParametro(const unsigned iParam, const float t_sec)
     {
     // Rotación aspas
     case 0:
-        *pm_rot_aspas = glm::translate(glm::mat4(1.0f), vec3(0, 0.8, 0.93)) * glm::rotate(-t_sec, glm::vec3(0.0f, 0.0f, 1.0f)) * glm::translate(glm::mat4(1.0f), -vec3(0, 0.8, 0.93));
+        *pm_rot_aspas = glm::rotate(-t_sec*5.0f, glm::vec3(0.0f, 1.0f, 0.0f));
         break;
     // Rotación puerta
     case 1:
@@ -289,13 +314,20 @@ void Molino::actualizarEstadoParametro(const unsigned iParam, const float t_sec)
         angle = -abs((sin(t_sec) * M_PI / 2));
         *pm_rot_puerta = glm::translate(glm::mat4(1.0f), vec3(-0.8, 0.5, -0.1)) * glm::rotate(angle, glm::vec3(0.0f, 1.0f, 0.0f)) * glm::translate(glm::mat4(1.0f), -vec3(-0.8, 0.5, -0.1));
         break;
-    // Rotación nubes
+    // Translación nubes
     case 2:
-        *pm_rot_nubes = translate(vec3{0.0, 0.5 * sin(2 * M_PI * t_sec / 3), 0.0});
+        *pm_trans_nubes = translate(vec3{0.0, 0.5 * sin(2 * M_PI * t_sec / 3), 0.0});
         break;
-    // Rotación sol
+    // Translación sol
     case 3:
-        *pm_rot_sol = translate(vec3{0.0, -3.5 * sin(2 * M_PI * t_sec / 20), 0.0});
+        *pm_rot_sol = rotate(t_sec/2, vec3{0.0, 1.0, 0.0});
+        break;
+    // Translación tejado
+    case 4:
+        *pm_trans_tejado = translate(vec3{0.0, 1.5 * abs(sin(2 * M_PI * t_sec / 20)), 0.0});
+        break;
+    case 5:
+        *pm_trans_esfera = translate(vec3{0.0, 1.30 * abs(sin(2 * M_PI * t_sec / 20)), 0.0});
         break;
     }
-}
+} 
