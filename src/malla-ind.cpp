@@ -304,9 +304,9 @@ void MallaInd::visualizarNormalesGL()
       for (unsigned i = 0; i < vertices.size(); i++)
       {
          segmentos_normales.push_back(vertices.at(i));
-         segmentos_normales.push_back(vertices.at(i) + 0.1f * nor_ver.at(i));
+         segmentos_normales.push_back(vertices.at(i) + 0.35f * nor_ver.at(i));
       }
-      dvao_normales = new DescrVAO(1, new DescrVBOAtribs(ind_atrib_posiciones, segmentos_normales));
+      dvao_normales = new DescrVAO(numero_atributos_cauce, new DescrVBOAtribs(ind_atrib_posiciones, segmentos_normales));
    }
 
    dvao_normales->draw(GL_LINES);

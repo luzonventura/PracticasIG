@@ -47,6 +47,53 @@ void MallaRevol::inicializar(
 {
    using namespace glm;
 
+   // COMPLETAR: práctica 4: creación de las normales y materiales/texturas
+
+   // Lista de vectores para almacenar normales a las aristas.
+   std::vector<vec3> normalesAristas;
+
+   // Calcular normales a las aristas.
+   for (unsigned i = 0; i < perfil.size() - 1; i++) {
+      float diferenciaX = (perfil[i + 1] - perfil[i])[0];
+      float diferenciaY = (perfil[i + 1] - perfil[i])[1];
+      vec3 normalArista(vec3(diferenciaY, -diferenciaX, 0.0f)); // Rotación de 90 grados en el plano XY.
+
+      // Normalizar si no es el vector cero.
+      if (glm::length(normalArista) != 0.0)
+         normalArista = glm::normalize(normalArista);
+    
+      normalesAristas.push_back(normalArista);
+   }
+
+   // Lista de vectores para almacenar normales a los vértices.
+   std::vector<vec3> normalesVertices;
+
+   normalesVertices.push_back(normalesAristas[0]);
+   for (unsigned i = 1; i < perfil.size() - 1; i++) {
+      normalesVertices.push_back(glm::normalize(normalesAristas[i - 1] + normalesAristas[i]));
+   }
+
+   normalesVertices.push_back(normalesAristas[perfil.size() - 2]);
+
+   // Vectores para almacenar distancias y coordenadas de textura.
+   std::vector<float> distancias, coordenadasTextura, sumasParciales;
+   float longitudTotal;
+
+   // Calcular distancias entre puntos del perfil.
+   for (unsigned i = 0; i < perfil.size() - 1; i++) {
+      distancias.push_back(glm::sqrt(glm::length(perfil[i + 1] - perfil[i])));
+   }
+
+   sumasParciales.push_back(0.0f);
+   for (unsigned i = 1; i < perfil.size(); i++) {
+      sumasParciales.push_back(sumasParciales[i - 1] + distancias[i - 1]);
+   }
+
+   longitudTotal = sumasParciales[perfil.size() - 1];
+   coordenadasTextura.push_back(0.0f);
+   for (unsigned i = 1; i < perfil.size(); i++)
+      coordenadasTextura.push_back(sumasParciales[i] / longitudTotal);
+
    // COMPLETAR: práctica 2: implementar algoritmo de creación de malla de revolución
    //
    // Escribir el algoritmo de creación de una malla indexada por revolución de un
@@ -74,6 +121,14 @@ void MallaRevol::inicializar(
          q[2] = -s * p_j[0] + c * p_j[2];
 
          vertices.push_back(q);
+
+         // PRACTICA 4
+         vec3 normals = vec3(normalesVertices[j][0] * cos((2*M_PI*i)/(n - 1)), normalesVertices[j][1], -normalesVertices[j][0] * sin((2*M_PI*i)/(n - 1)));
+         if (length(normals) != 0.0)
+            normalize(normals);
+         nor_ver.push_back(normals);
+         
+         cc_tt_ver.push_back({float(i) / (n-1), 1-coordenadasTextura[j]});
       }
    }
 

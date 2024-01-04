@@ -46,6 +46,7 @@
 #include "escena.h"
 #include "grafo-escena.h"
 #include "modelo-jer.h"
+#include "latapeones.h"
 // #include "examen-ec-p123.h"
 
 // -----------------------------------------------------------------------------------------------
@@ -62,7 +63,7 @@ Escena::Escena()
    // ...
 
    col_fuentes = new Col2Fuentes();
-   material_ini = new Material();
+   material_ini = new Material(0.4f, 0.8f, 0.0f, 2.0f);
 
    // COMPLETAR: práctica 5: añadir varias cámaras perspectiva y ortogonales al vector de cámaras de la escena
    //
@@ -150,6 +151,9 @@ void Escena::visualizarGL()
       // * activar la colección de fuentes de la escena
       // * activar el material inicial (usando 'pila_materiales')
       // ....
+      cauce->fijarEvalMIL(true);
+      col_fuentes->activar();
+      apl->pila_materiales->activar(material_ini);
    }
    else // si la iluminación no está activada, deshabilitar MIL y texturas
    {
@@ -254,7 +258,7 @@ void Escena::visualizarNormales()
    cauce->fijarEvalText(false);
    cauce->fijarColor(1.0f, 0.0f, 0.0f);
 
-   objetos[ind_objeto_actual]->visualizarNormalesGL();
+   objetoActual()->visualizarNormalesGL();
 }
 
 // -----------------------------------------------------------------------------------------------
@@ -400,6 +404,8 @@ Escena4::Escena4()
 {
    using namespace std;
    cout << "Creando objetos de la práctica 4." << endl;
+   
+   objetos.push_back(new LataPeones());
 }
 
 // ----------------------------------------------------------------------

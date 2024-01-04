@@ -131,15 +131,20 @@ void NodoGrafoEscena::visualizarGL()
 
    cauce->pushMM();
 
-   for (unsigned i = 0; i < entradas.size(); i++)
+   for( unsigned i = 0 ; i < entradas.size() ; i++ )
    {
-      if (entradas[i].tipo == TipoEntNGE::objeto)
+      switch( entradas[i].tipo )
       {
-         entradas[i].objeto->visualizarGL();
-      }
-      else if (entradas[i].tipo == TipoEntNGE::transformacion)
-      {
-         cauce->compMM(*(entradas[i].matriz));
+         case TipoEntNGE::objeto : 
+            entradas[i].objeto->visualizarGL();
+         break ;
+         case TipoEntNGE::transformacion : 
+            cauce->compMM( *(entradas[i].matriz)); 
+         break ;
+         case TipoEntNGE::material : 
+            if ( apl->iluminacion ) 
+               pila_materiales->activar( entradas[i].material );
+         break ;
       }
    }
 
@@ -158,7 +163,20 @@ void NodoGrafoEscena::visualizarGL()
    //   2. si una entrada es de tipo material, activarlo usando a pila de materiales
    //   3. al finalizar, hacer 'pop' de la pila de materiales (restaura el material activo al inicio)
 
-   // ......
+   if (apl->iluminacion)
+   {
+      pila_materiales->push();
+
+      for (unsigned i = 0; i < entradas.size(); i++)
+      {
+         if (entradas[i].tipo == TipoEntNGE::material)
+         {
+            pila_materiales->activar(entradas[i].material);
+         }
+      }
+
+      pila_materiales->pop();
+   }
 }
 
 // *****************************************************************************
@@ -222,7 +240,17 @@ void NodoGrafoEscena::visualizarNormalesGL()
    // - ignorar el color o identificador del nodo (se supone que el color ya está prefijado antes de la llamada)
    // - ignorar las entradas de tipo material, y la gestión de materiales (se usa sin iluminación)
 
-   // .......
+   cauce->pushMM();
+
+   for (unsigned i = 0; i < entradas.size(); i++) {
+      if (entradas[i].tipo == TipoEntNGE::objeto)
+         entradas[i].objeto->visualizarNormalesGL();
+      else if (entradas[i].tipo == TipoEntNGE::transformacion)
+         cauce->compMM(*entradas[i].matriz);
+   }
+
+   cauce->popMM();
+   
 }
 
 // -----------------------------------------------------------------------------
