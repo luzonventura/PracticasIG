@@ -129,6 +129,10 @@ void NodoGrafoEscena::visualizarGL()
       cauce->fijarColor(leerColor());
    }
 
+   if (apl->iluminacion) {
+      apl->pila_materiales->push();
+   }
+
    cauce->pushMM();
 
    for( unsigned i = 0 ; i < entradas.size() ; i++ )
@@ -163,19 +167,8 @@ void NodoGrafoEscena::visualizarGL()
    //   2. si una entrada es de tipo material, activarlo usando a pila de materiales
    //   3. al finalizar, hacer 'pop' de la pila de materiales (restaura el material activo al inicio)
 
-   if (apl->iluminacion)
-   {
-      pila_materiales->push();
-
-      for (unsigned i = 0; i < entradas.size(); i++)
-      {
-         if (entradas[i].tipo == TipoEntNGE::material)
-         {
-            pila_materiales->activar(entradas[i].material);
-         }
-      }
-
-      pila_materiales->pop();
+   if (apl->iluminacion) {
+      apl->pila_materiales->pop();
    }
 }
 
@@ -560,3 +553,23 @@ void GrafoCubos::actualizarEstadoParametro(const unsigned iParam, const float tS
       break;
    }
 }
+
+// ****************************************************************************************************
+
+NodoCubo24::NodoCubo24(){
+   agregar( new Material( new Textura("window-icon.jpg") , 0.5, 0.3, 0.7, 100.0) );
+   agregar( new Cubo24() );
+}
+
+
+// ****************************************************************************************************
+
+NodoDiscoP4::NodoDiscoP4(){
+   Textura *textura = new Textura("cuadricula.jpg");
+   Material *material = new Material(textura, 0.5, 0.8, 0.2, 100.0);
+   ponerNombre("Nodo ejercicio adicional práctica 4, examen 27 enero");
+   agregar(material);
+   agregar( new MallaDiscoP4() );
+}
+
+// ****************************************************************************************************
