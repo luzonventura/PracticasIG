@@ -107,6 +107,10 @@ bool Objeto3D::cuandoClick( const glm::vec3 & centro_wc )
    // el método 'mirarHacia' de esa cámara.
    // ...
 
+   CamaraInteractiva * camara = escena->camaraActual() ; assert( camara != nullptr );
+   cout << centro_wc[0] << " " << centro_wc[1] << " " << centro_wc[2] << endl;
+   camara->mirarHacia( centro_wc );
+
    return true ;
 }
 // -----------------------------------------------------------------------------

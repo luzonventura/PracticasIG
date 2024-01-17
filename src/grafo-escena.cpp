@@ -129,26 +129,27 @@ void NodoGrafoEscena::visualizarGL()
       cauce->fijarColor(leerColor());
    }
 
-   if (apl->iluminacion) {
+   if (apl->iluminacion)
+   {
       apl->pila_materiales->push();
    }
 
    cauce->pushMM();
 
-   for( unsigned i = 0 ; i < entradas.size() ; i++ )
+   for (unsigned i = 0; i < entradas.size(); i++)
    {
-      switch( entradas[i].tipo )
+      switch (entradas[i].tipo)
       {
-         case TipoEntNGE::objeto : 
-            entradas[i].objeto->visualizarGL();
-         break ;
-         case TipoEntNGE::transformacion : 
-            cauce->compMM( *(entradas[i].matriz)); 
-         break ;
-         case TipoEntNGE::material : 
-            if ( apl->iluminacion ) 
-               pila_materiales->activar( entradas[i].material );
-         break ;
+      case TipoEntNGE::objeto:
+         entradas[i].objeto->visualizarGL();
+         break;
+      case TipoEntNGE::transformacion:
+         cauce->compMM(*(entradas[i].matriz));
+         break;
+      case TipoEntNGE::material:
+         if (apl->iluminacion)
+            pila_materiales->activar(entradas[i].material);
+         break;
       }
    }
 
@@ -167,7 +168,8 @@ void NodoGrafoEscena::visualizarGL()
    //   2. si una entrada es de tipo material, activarlo usando a pila de materiales
    //   3. al finalizar, hacer 'pop' de la pila de materiales (restaura el material activo al inicio)
 
-   if (apl->iluminacion) {
+   if (apl->iluminacion)
+   {
       apl->pila_materiales->pop();
    }
 }
@@ -235,7 +237,8 @@ void NodoGrafoEscena::visualizarNormalesGL()
 
    cauce->pushMM();
 
-   for (unsigned i = 0; i < entradas.size(); i++) {
+   for (unsigned i = 0; i < entradas.size(); i++)
+   {
       if (entradas[i].tipo == TipoEntNGE::objeto)
          entradas[i].objeto->visualizarNormalesGL();
       else if (entradas[i].tipo == TipoEntNGE::transformacion)
@@ -243,7 +246,6 @@ void NodoGrafoEscena::visualizarNormalesGL()
    }
 
    cauce->popMM();
-   
 }
 
 // -----------------------------------------------------------------------------
@@ -271,6 +273,31 @@ void NodoGrafoEscena::visualizarModoSeleccionGL()
    // 6. Si el identificador no es -1, restaurar el color previo del cauce (con 'popColor')
    //
    // ........
+
+   int identificador = leerIdentificador();
+
+   if (identificador != -1)
+   {
+      cauce->pushColor();
+      cauce->fijarColor(ColorDesdeIdent(identificador));
+   }
+
+   cauce->pushMM();
+
+   for (unsigned i = 0; i < entradas.size(); i++)
+   {
+      if (entradas[i].tipo == TipoEntNGE::objeto)
+         entradas[i].objeto->visualizarModoSeleccionGL();
+      else if (entradas[i].tipo == TipoEntNGE::transformacion)
+         cauce->compMM(*entradas[i].matriz);
+   }
+
+   cauce->popMM();
+
+   if (identificador != -1)
+   {
+      cauce->popColor();
+   }
 }
 
 // -----------------------------------------------------------------------------
@@ -354,6 +381,37 @@ void NodoGrafoEscena::calcularCentroOC()
    //    en coordenadas de objeto (hay que hacerlo recursivamente)
    //   (si el centro ya ha sido calculado, no volver a hacerlo)
    // ........
+
+   bool centro_calculado = false;
+
+   if (centro_calculado)
+      return;
+
+   vec3 centro = vec3(0.0, 0.0, 0.0);
+   int contador = 0;
+   mat4 matriz = mat4(1.0);
+
+   for (unsigned int i = 0; i < entradas.size(); i++)
+   {
+      if (entradas[i].tipo == TipoEntNGE::transformacion)
+      {
+         matriz *= *(entradas[i].matriz);
+      }
+      else if (entradas[i].tipo == TipoEntNGE::objeto)
+      {
+         entradas[i].objeto->calcularCentroOC();
+         centro += vec3(matriz * vec4(entradas[i].objeto->leerCentroOC(), 1.0));
+         contador++;
+      }
+   }
+
+   for (unsigned int i = 0; i < 3; i++)
+   {
+      centro[i] /= contador;
+   }
+
+   ponerCentroOC(centro);
+   centro_calculado = true;
 }
 // -----------------------------------------------------------------------------
 // método para buscar un objeto con un identificador y devolver un puntero al mismo
@@ -376,12 +434,37 @@ bool NodoGrafoEscena::buscarObjeto(
    // 1. calcula el centro del objeto, (solo la primera vez)
    // ........
 
+   calcularCentroOC();
+
    // 2. si el identificador del nodo es el que se busca, ya está (terminar)
    // ........
+
+   if (leerIdentificador() == ident_busc)
+   {
+      centro_wc = leerCentroOC();
+      if (objeto != nullptr)
+         *objeto = this;
+      return true;
+   }
 
    // 3. El nodo no es el buscado: buscar recursivamente en los hijos
    //    (si alguna llamada para un sub-árbol lo encuentra, terminar y devolver 'true')
    // ........
+
+   mat4 matrizmod = mmodelado;
+
+   for (unsigned int i = 0; i < entradas.size(); i++)
+   {
+      if (entradas[i].tipo == TipoEntNGE::objeto)
+      {
+         if (entradas[i].objeto->buscarObjeto(ident_busc, matrizmod, objeto, centro_wc))
+            return true;
+      }
+      else if (entradas[i].tipo == TipoEntNGE::transformacion)
+      {
+         matrizmod = matrizmod * (*entradas[i].matriz);
+      }
+   }
 
    // ni este nodo ni ningún hijo es el buscado: terminar
    return false;
@@ -556,20 +639,169 @@ void GrafoCubos::actualizarEstadoParametro(const unsigned iParam, const float tS
 
 // ****************************************************************************************************
 
-NodoCubo24::NodoCubo24(){
-   agregar( new Material( new Textura("window-icon.jpg") , 0.5, 0.3, 0.7, 100.0) );
-   agregar( new Cubo24() );
+NodoCubo24::NodoCubo24()
+{
+   agregar(new Material(new Textura("window-icon.jpg"), 0.5, 0.3, 0.7, 100.0));
+   agregar(new Cubo24());
 }
-
 
 // ****************************************************************************************************
 
-NodoDiscoP4::NodoDiscoP4(){
+NodoDiscoP4::NodoDiscoP4()
+{
    Textura *textura = new Textura("cuadricula.jpg");
    Material *material = new Material(textura, 0.5, 0.8, 0.2, 100.0);
    ponerNombre("Nodo ejercicio adicional práctica 4, examen 27 enero");
    agregar(material);
-   agregar( new MallaDiscoP4() );
+   agregar(new MallaDiscoP4());
 }
 
 // ****************************************************************************************************
+
+MiEsferaE1::MiEsferaE1(unsigned i, unsigned j)
+{
+   fila = i;
+   columna = j;
+   agregar(new Esfera(20, 20));
+}
+
+bool MiEsferaE1::cuandoClick(const glm::vec3 &centro_wc)
+{
+   std::cout << "Se ha seleccionado la esfera numero " << columna + 1 << " de la fila numero " << fila + 1 << std::endl;
+}
+
+// ****************************************************************************************************
+
+GrafoEsferasP5::GrafoEsferasP5()
+{
+   const unsigned
+       n_filas_esferas = 8,
+       n_esferas_x_fila = 5;
+   const float
+       e = 0.4 / n_esferas_x_fila;
+
+   agregar(glm::scale(glm::vec3(e, e, e)));
+
+   for (unsigned i = 0; i < n_filas_esferas; i++)
+   {
+      NodoGrafoEscena *fila_esferas = new NodoGrafoEscena();
+      for (unsigned j = 0; j < n_esferas_x_fila; j++)
+      {
+         MiEsferaE1 *esfera = new MiEsferaE1(i, j);
+         esfera->ponerIdentificador(i * n_esferas_x_fila + j + 1);
+         fila_esferas->agregar(glm::translate(glm::vec3(2.2, 0.0, 0.0)));
+         fila_esferas->agregar(esfera);
+      }
+      agregar(fila_esferas);
+      agregar(glm::translate(glm::vec3(0.0, 0.0, 5.0)));
+   }
+}
+
+// ****************************************************************************************************
+
+MiEsferaE2::MiEsferaE2()
+{
+   ponerColor(glm::vec3(1.0, 1.0, 1.0));
+   agregar(new Esfera(20, 20));
+}
+
+bool MiEsferaE2::cuandoClick(const glm::vec3 &centro_wc)
+{
+   if (leerColor() == glm::vec3(1.0, 1.0, 1.0))
+   {
+      ponerColor(glm::vec3(1.0, 0.0, 0.0));
+   }
+   else
+   {
+      ponerColor(glm::vec3(1.0, 1.0, 1.0));
+   }
+}
+
+// ****************************************************************************************************
+
+GrafoEsferasP5_2::GrafoEsferasP5_2()
+{
+   const unsigned
+       n_filas_esferas = 8,
+       n_esferas_x_fila = 5;
+   const float
+       e = 0.5 / n_esferas_x_fila;
+
+   agregar(glm::scale(glm::vec3(e, e, e)));
+
+   for (unsigned i = 0; i < n_filas_esferas; i++)
+   {
+      NodoGrafoEscena *fila_esferas = new NodoGrafoEscena();
+      fila_esferas->agregar(glm::translate(glm::vec3(3.0, 0.0, 0.0)));
+      for (unsigned j = 0; j < n_esferas_x_fila; j++)
+      {
+         MiEsferaE2 *esfera = new MiEsferaE2();
+         esfera->ponerIdentificador(i * n_esferas_x_fila + j + 1);
+         fila_esferas->agregar(glm::translate(glm::vec3(2.5, 0.0, 0.0)));
+         fila_esferas->agregar(esfera);
+      }
+      agregar(fila_esferas);
+      float angulo = (2 * M_PI) / n_filas_esferas;
+      agregar(glm::rotate(angulo, glm::vec3(0.0, 1.0, 0.0)));
+   }
+}
+
+// ****************************************************************************************************
+
+PiramideRayada::PiramideRayada()
+{
+   Textura *textura = new Textura("textura-examen.jpg");
+   Material *material = new Material(textura, 0.5, 0.8, 0.2, 100.0);
+
+   ponerNombre("Piramide rayada");
+   agregar(material);
+   agregar(new Piramide());
+}
+
+// ****************************************************************************************************
+
+NodoEXP4::NodoEXP4()
+{
+   Textura *textura = new Textura("textura-examen.jpg");
+   Material *material = new Material(textura, 0.5, 0.8, 0.2, 100.0);
+   agregar(material);
+   agregar(new MallaEXP4());
+   ponerNombre("Nodo ejercicio adicional práctica 4, examen 27 enero");
+}
+
+// ****************************************************************************************************
+
+EsferaEXP5::EsferaEXP5(unsigned int n)
+{
+   agregar(glm::translate(glm::vec3(1.0, 0.0, 0.0)));
+   agregar(glm::scale(glm::vec3(M_PI / float(n), M_PI / float(n), M_PI / float(n))));
+   ponerColor(glm::vec3(1.0, 1.0, 1.0));
+   agregar(new Esfera(50, 50));
+   ponerNombre("EsferaEXP5");
+}
+
+bool EsferaEXP5::cuandoClick(const glm::vec3 &centro_wc)
+{
+   if (leerColor() == glm::vec3(1.0, 1.0, 1.0))
+   {
+      ponerColor(glm::vec3(1.0, 0.5, 0.5));
+   }
+   else
+   {
+      ponerColor(glm::vec3(1.0, 1.0, 1.0));
+   }
+}
+
+AnilloEXP5::AnilloEXP5(unsigned int n)
+{
+   assert(n > 3);
+   for (unsigned i = 0; i < n; i++)
+   {
+      EsferaEXP5 *esfera = new EsferaEXP5(n);
+      esfera->ponerIdentificador(i + 1);
+      float angulo = 2 * M_PI / float(n);
+      agregar(glm::rotate(angulo, glm::vec3(0.0, 1.0, 0.0)));
+      agregar(esfera);
+   }
+   ponerNombre("AnilloEXP5");
+}

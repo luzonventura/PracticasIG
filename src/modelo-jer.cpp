@@ -156,20 +156,17 @@ Molino::Molino()
     cuerpo1->ponerColor({0.961, 0.816, 0.855});
 
     cuerpo2->ponerNombre("Cuerpo base del molino");
-    cuerpo2->ponerIdentificador(identificador++);
-    cuerpo2->agregar(materialPiedraOscuraXY);
+    cuerpo2->agregar(materialPiedraOscura);
     cuerpo2->agregar(new CilindroMolino(30, 50, 0.3, 0.9));
     cuerpo2->ponerColor({0.5, 0.5, 0.5});
 
     // Tapas
     circulo1->ponerNombre("Tapa inferior del molino");
-    circulo1->ponerIdentificador(identificador++);
     circulo1->agregar(materialPiedraOscuraXZ);
     circulo1->agregar(new Circulo(0.905, 30));
     circulo1->ponerColor({0.5, 0.5, 0.5});
 
     circulo2->ponerNombre("Tapa superior del molino");
-    circulo2->ponerIdentificador(identificador++);
     circulo2->agregar(translate(vec3(0.0, 0.3, 0.0)));
     circulo2->agregar(materialPiedraOscuraXZ);
     circulo2->agregar(new Circulo(0.905, 30));
@@ -180,7 +177,6 @@ Molino::Molino()
     pm_rot_puerta = puerta->leerPtrMatriz(ind_rot_puerta);
 
     puerta->ponerNombre("Puerta del molino");
-    puerta->ponerIdentificador(identificador++);
     puerta->agregar(translate(vec3(-0.8, 0.5, 0.0)));
     puerta->agregar(rotate(float(M_PI / 2), vec3{0.0, 1.0, 0.0}));
     puerta->agregar(scale(vec3(0.1, 0.2, 0.01)));
@@ -188,6 +184,8 @@ Molino::Molino()
     puerta->agregar(new Cubo24());
     puerta->ponerColor({0.329, 0.2, 0.071});
 
+    cuerpo->ponerNombre("Cuerpo del molino");
+    cuerpo->ponerIdentificador(identificador++);
     cuerpo->agregar(cuerpo1);
     cuerpo->agregar(cuerpo2);
     cuerpo->agregar(circulo1);
@@ -196,14 +194,12 @@ Molino::Molino()
 
     // Tejado
     cono->ponerNombre("Tejado del molino");
-    cono->ponerIdentificador(identificador++);
     cono->agregar(translate(vec3(0.0, 1.35, 0.0)));
     cono->agregar(materialMadera);
     cono->agregar(new ConoMolino(30, 20));
     cono->ponerColor({0.9, 0, 0});
 
     circulotejado->ponerNombre("Tapa del tejado del molino");
-    circulotejado->ponerIdentificador(identificador++);
     circulotejado->agregar(translate(vec3(0.0, 1.35, 0.0)));
     circulotejado->agregar(materialMaderaLaminada);
     circulotejado->agregar(new Circulo(0.998, 30));
@@ -214,7 +210,6 @@ Molino::Molino()
     // Cuadrado del conjunto de aspas (podría haber reutilizado
     // el del cuerpo)
     cuadradoAspas->ponerNombre("Cuadrado del conjunto de aspas");
-    cuadradoAspas->ponerIdentificador(identificador++);
     cuadradoAspas->agregar(translate(vec3(0.0, 0.8, 0.93)));
     cuadradoAspas->agregar(scale(vec3(0.04, 0.04, 0.04)));
     cuadradoAspas->agregar(materialMaderaLaminada);
@@ -223,7 +218,6 @@ Molino::Molino()
 
     // Aspa principal 1
     aspaPrincipal1->ponerNombre("Aspa principal 1");
-    aspaPrincipal1->ponerIdentificador(identificador++);
     aspaPrincipal1->agregar(translate(vec3(0.0, 0.82, 1.02)));
     aspaPrincipal1->agregar(scale(vec3(0.04, 0.8, 0.05)));
     aspaPrincipal1->agregar(materialMaderaLaminada);
@@ -232,7 +226,6 @@ Molino::Molino()
 
     // Subaspa 1.1
     subAspa11->ponerNombre("Subaspa 1.1");
-    subAspa11->ponerIdentificador(identificador++);
     subAspa11->agregar(translate(vec3(0.12, 1.34, 1.0)));
     subAspa11->agregar(scale(vec3(0.08, 0.28, 0.0)));
     subAspa11->agregar(materialTelaBlanca);
@@ -241,7 +234,6 @@ Molino::Molino()
 
     // Subaspa 1.2
     subAspa12->ponerNombre("Subaspa 1.2");
-    subAspa12->ponerIdentificador(identificador++);
     subAspa12->agregar(translate(vec3(-0.12, 0.3, 1.0)));
     subAspa12->agregar(scale(vec3(0.08, 0.28, 0.0)));
     subAspa12->agregar(materialTelaBlanca);
@@ -254,7 +246,6 @@ Molino::Molino()
 
     // Aspa principal 2
     aspaPrincipal2->ponerNombre("Aspa principal 2");
-    aspaPrincipal2->ponerIdentificador(identificador++);
     aspaPrincipal2->agregar(rotate(float(M_PI / 2), vec3{0.0, 0.0, 1.0}));
     aspaPrincipal2->agregar(translate(vec3(0.8, 0.02, 1.02)));
     aspaPrincipal2->agregar(scale(vec3(0.04, 0.8, 0.05)));
@@ -264,7 +255,6 @@ Molino::Molino()
 
     // Subaspa 2.1
     subAspa21->ponerNombre("Subaspa 2.1");
-    subAspa21->ponerIdentificador(identificador++);
     subAspa21->agregar(rotate(float(M_PI / 2), vec3{0.0, 0.0, 1.0}));
     subAspa21->agregar(translate(vec3(0.92, 0.54, 1.0)));
     subAspa21->agregar(scale(vec3(0.08, 0.28, 0.0)));
@@ -274,7 +264,6 @@ Molino::Molino()
 
     // Subaspa 2.2
     subAspa22->ponerNombre("Subaspa 2.2");
-    subAspa22->ponerIdentificador(identificador++);
     subAspa22->agregar(rotate(float(M_PI / 2), vec3{0.0, 0.0, 1.0}));
     subAspa22->agregar(translate(vec3(0.68, -0.50, 1.0)));
     subAspa22->agregar(scale(vec3(0.08, 0.28, 0.0)));
@@ -322,26 +311,25 @@ Molino::Molino()
 
     // Nubes 
     nube1->ponerNombre("Nube 1");
-    nube1->ponerIdentificador(identificador++);
     nube1->agregar(translate(vec3(2.0, 2.0, -1.0)));
     nube1->agregar(scale(vec3(1.0, 0.7, 0.4)));
     nube1->agregar(new Esfera(8, 40));
     nube1->ponerColor({0.902, 0.898, 0.886});
 
     nube2->ponerNombre("Nube 2");
-    nube2->ponerIdentificador(identificador++);
     nube2->agregar(translate(vec3(2.8, 2.5, -2.0)));
     nube2->agregar(scale(vec3(1.0, 0.7, 0.4)));
     nube2->agregar(new Esfera(8, 40));
     nube2->ponerColor({0.902, 0.898, 0.886});
 
     nube3->ponerNombre("Nube 3");
-    nube3->ponerIdentificador(identificador++);
     nube3->agregar(translate(vec3(4.5, 2.0, -1.0)));
     nube3->agregar(scale(vec3(1.0, 0.7, 0.4)));
     nube3->agregar(new Esfera(8, 40));
     nube3->ponerColor({0.902, 0.898, 0.886});
 
+    nubes->ponerNombre("Nubes");
+    nubes->ponerIdentificador(identificador++);
     nubes->agregar(scale(vec3(0.7, 0.7, 0.7)));
     nubes->agregar(translate(vec3(0.0, 0.0, -0.5)));
     nubes->agregar(materialBlanco);
@@ -364,7 +352,6 @@ Molino::Molino()
 
     // Base
     base->ponerNombre("Base del molino");
-    base->ponerIdentificador(identificador++);
     base->agregar(scale(vec3(4.0, 4.0, 4.0)));
     base->agregar(materialCesped);
     base->agregar(new Base());

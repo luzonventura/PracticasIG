@@ -198,6 +198,10 @@ void FGE_PulsarLevantarTecla( GLFWwindow* window, int key, int scancode, int act
       // FBO ha quedado activada o desactivada
       //
 
+      case GLFW_KEY_Y :
+         apl->visualizar_fbo = ! apl->visualizar_fbo ;
+         cout << "Visualizar FBO : " << (apl->visualizar_fbo ? "activado" : "desactivado") << endl << flush ;
+         break ;
 
       case GLFW_KEY_T :
          apl->imprimir_tiempos = ! apl->imprimir_tiempos ;
